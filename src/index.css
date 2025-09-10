@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Active dot = line */
+.slick-dots li.slick-active div {
+  background-color: #facc15; 
+  height: 6px;            
+}
+
+
+
+#root {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+body{
+  overflow-x: hidden;
+}
+::-webkit-scrollbar{
+  display: none;
+} 
+
+@media(max-width:1022px){
+  a.active{
+    background-color: black;
+    color: white;
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+@media(min-width:400px){
+  body{
+    overflow-x: hidden;
+  }
+}
+
+.custom-shape-divider-bottom-1755711226 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-bottom-1755711226 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 150px;
+}
+
+.custom-shape-divider-bottom-1755711226 .shape-fill {
+    fill: #FFFFFF;
+    opacity: .5;
+}
