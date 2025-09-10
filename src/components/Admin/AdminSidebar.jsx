@@ -4,7 +4,7 @@ import { FaUser, FaBoxOpen, FaClipboard, FaShoppingBag } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import { clearCart } from "../../../../Backend/controller/cartController";
+import { clearCart } from "../../redux/slices/cartSlice";
 import { clearCartAsync } from "../../redux/slices/cartSlice";
 
 const AdminSidebar = ({closeSidebar}) => {
