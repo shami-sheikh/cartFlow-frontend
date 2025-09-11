@@ -130,7 +130,7 @@ const ProductDetails = ({ productId }) => {
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col md:flex-row gap-10"
             >
-              {/* Thumbnails */}
+              {/* Thumbnails for desktop (vertical) */}
               <div className="hidden md:flex flex-col space-y-4">
                 {selectedProduct.images?.map((image, index) => (
                   <motion.img
@@ -147,7 +147,7 @@ const ProductDetails = ({ productId }) => {
               {/* Main Image */}
               <motion.div
                 layout
-                className="md:w-1/2 flex justify-center"
+                className="md:w-1/2 flex flex-col items-center"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6 }}
@@ -157,6 +157,20 @@ const ProductDetails = ({ productId }) => {
                   alt="Main Product"
                   className="w-full max-h-[500px] object-cover rounded-xl shadow-lg border border-[#eacd89]/40"
                 />
+
+                {/* Thumbnails for mobile (horizontal scroll) */}
+                <div className="flex md:hidden overflow-x-auto gap-3 mt-4 w-full">
+                  {selectedProduct.images?.map((image, index) => (
+                    <motion.img
+                      key={index}
+                      src={image.url}
+                      alt={image.alt || "thumbnail"}
+                      whileHover={{ scale: 1.1 }}
+                      className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-[#eacd89] flex-shrink-0"
+                      onClick={() => setMainImage(image.url)}
+                    />
+                  ))}
+                </div>
               </motion.div>
 
               {/* Right Side */}
