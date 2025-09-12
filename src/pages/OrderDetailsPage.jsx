@@ -92,7 +92,25 @@ const OrderDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#18130F] to-[#2a2520] text-gray-100 px-4 py-8">
-      <div className="max-w-6xl mx-auto">
+      {/* Print-specific styles */}
+      <style>{`
+        @media print {
+          body * {
+            visibility: hidden !important;
+          }
+          .print-area, .print-area * {
+            visibility: visible !important;
+          }
+          .print-area {
+            position: absolute !important;
+            left: 0; top: 0; width: 100vw; background: #fff !important; color: #000 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+        }
+      `}</style>
+      <div className="max-w-6xl mx-auto print-area">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Link
@@ -104,14 +122,16 @@ const OrderDetailsPage = () => {
             Back to Orders
           </Link>
           <h1 className="md:text-3xl font-bold text-white">Order Details</h1>
-          <div className="flex gap-3">
+          <div className="flex gap-3 no-print">
             <button
               onClick={handlePrint}
               className="p-2 border border-[#C6A15B] text-[#C6A15B] rounded-lg hover:bg-[#C6A15B] hover:text-black transition-colors"
+              title="Print Order Details"
             >
               <Printer size={20} />
             </button>
-            <button className="p-2 border border-[#C6A15B] text-[#C6A15B] rounded-lg hover:bg-[#C6A15B] hover:text-black transition-colors">
+            {/* Download button can be implemented with html2pdf or similar if needed */}
+            <button className="p-2 border border-[#C6A15B] text-[#C6A15B] rounded-lg hover:bg-[#C6A15B] hover:text-black transition-colors" disabled title="Download as PDF (use Print to PDF)">
               <Download size={20} />
             </button>
           </div>
@@ -311,17 +331,20 @@ const OrderDetailsPage = () => {
                 </div>
               </div>
 
-              {/* Support */}
+              {/* Support */}    
               <div className="bg-[#1F1A16] p-6 rounded-2xl shadow-lg">
                 <h2 className="text-xl font-bold mb-4">Need Help?</h2>
                 <p className="text-gray-400 mb-4">
-                  If you have any questions about your order, we're here to
-                  help.
+                  If you have any questions about your order, we're here to help.
                 </p>
-                <button className="w-full flex items-center justify-center gap-2 py-3 bg-[#C6A15B] text-black font-semibold rounded-lg hover:bg-[#d4b16c] transition-colors">
+                <a
+                  href={`mailto:amirsaikh950@gmail.com?subject=Order%20Support%20Request%20for%20Order%20${orderDetails._id}`}
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-[#C6A15B] text-black font-semibold rounded-lg hover:bg-[#d4b16c] transition-colors"
+                  style={{ textAlign: 'center' }}
+                >
                   <MessageCircle size={20} />
                   Contact Support
-                </button>
+                </a>
               </div>
             </div>
           </div>
