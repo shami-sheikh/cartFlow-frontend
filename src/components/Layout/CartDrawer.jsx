@@ -48,7 +48,7 @@ const CartDrawer = ({ drawerOpen, toggleDrawer }) => {
         shadow-2xl transition-transform ease-in-out duration-300 
         flex flex-col  ${
           drawerOpen
-            ? "translate-x-0 border-2 border-[#eacd89]/30 md:mr-0 mr-10 z-50"
+            ? "translate-x-0 border-2 border-[#eacd89]/30 md:mr-0  z-50"
             : "translate-x-full mr-0"
         }`}
       >

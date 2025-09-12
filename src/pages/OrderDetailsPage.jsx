@@ -131,7 +131,11 @@ const OrderDetailsPage = () => {
               <Printer size={20} />
             </button>
             {/* Download button can be implemented with html2pdf or similar if needed */}
-            <button className="p-2 border border-[#C6A15B] text-[#C6A15B] rounded-lg hover:bg-[#C6A15B] hover:text-black transition-colors" disabled title="Download as PDF (use Print to PDF)">
+            <button
+              className="p-2 border border-[#C6A15B] text-[#C6A15B] rounded-lg hover:bg-[#C6A15B] hover:text-black transition-colors"
+              disabled
+              title="Download as PDF (use Print to PDF)"
+            >
               <Download size={20} />
             </button>
           </div>
@@ -331,16 +335,19 @@ const OrderDetailsPage = () => {
                 </div>
               </div>
 
-              {/* Support */}    
+              {/* Support */}
               <div className="bg-[#1F1A16] p-6 rounded-2xl shadow-lg">
                 <h2 className="text-xl font-bold mb-4">Need Help?</h2>
                 <p className="text-gray-400 mb-4">
-                  If you have any questions about your order, we're here to help.
+                  If you have any questions about your order, we're here to
+                  help.
                 </p>
                 <a
-                  href={`mailto:amirsaikh950@gmail.com?subject=Order%20Support%20Request%20for%20Order%20${orderDetails._id}`}
+                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=amirsaikh950@gmail.com&su=Order%20Support%20Request%20for%20Order%20${orderDetails._id}`}
                   className="w-full flex items-center justify-center gap-2 py-3 bg-[#C6A15B] text-black font-semibold rounded-lg hover:bg-[#d4b16c] transition-colors"
-                  style={{ textAlign: 'center' }}
+                  style={{ textAlign: "center" }}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <MessageCircle size={20} />
                   Contact Support

@@ -16,9 +16,11 @@
   font-optical-sizing: auto;
   font-style: normal;
 }
-body{
+html, body {
   overflow-x: hidden;
+  width: 100%;
 }
+
 ::-webkit-scrollbar{
   display: none;
 } 
@@ -31,11 +33,7 @@ body{
     overflow-x: hidden;
   }
 }
-@media(min-width:400px){
-  body{
-    overflow-x: hidden;
-  }
-}
+
 
 .custom-shape-divider-bottom-1755711226 {
     position: absolute;
