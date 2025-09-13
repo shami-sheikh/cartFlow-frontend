@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { FiArrowLeft, FiClock, FiMail } from 'react-icons/fi';
-import { Loader } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { otpVerify, resendOtp } from "../redux/slices/authSlice.js"; 
-import { toast } from 'sonner'; 
+import React, { useState, useRef, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { FiArrowLeft, FiClock, FiMail } from "react-icons/fi";
+import { Loader } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { otpVerify, resendOtp } from "../redux/slices/authSlice.js";
+import { toast } from "sonner";
 
 const OTPVerification = () => {
   const navigate = useNavigate();
@@ -18,29 +18,48 @@ const OTPVerification = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
-  const otpValues = watch(['digit1', 'digit2', 'digit3', 'digit4']);
 
-  // Initialize timers from localStorage or defaults
+  useEffect(()=>{
+    if (!location.state?.email) {
+       navigate("/login");
+    }
+  })
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const otpValues = watch(["digit1", "digit2", "digit3", "digit4"]);
+
+  // Initialize timers
   useEffect(() => {
-    const otpExpire = localStorage.getItem('otpExpire');
-    const resendExpire = localStorage.getItem('resendExpire');
+    const otpExpire = localStorage.getItem("otpExpire");
+    const resendExpire = localStorage.getItem("resendExpire");
 
-    if (otpExpire) {
-      const remaining = Math.floor((parseInt(otpExpire) - Date.now()) / 1000);
-      setExpireTime(remaining > 0 ? remaining : 0);
+    const remaining = otpExpire
+      ? Math.floor((parseInt(otpExpire) - Date.now()) / 1000)
+      : 0;
+    const remainingResend = resendExpire
+      ? Math.floor((parseInt(resendExpire) - Date.now()) / 1000)
+      : 0;
+
+    if (!otpExpire || remaining <= 0) {
+      const newExpire = Date.now() + 600000; // 10 minutes
+      localStorage.setItem("otpExpire", newExpire);
+      setExpireTime(600);
     } else {
-      setExpireTime(600); // default 10 minutes
-      localStorage.setItem('otpExpire', Date.now() + 600000);
+      setExpireTime(remaining);
     }
 
-    if (resendExpire) {
-      const remainingResend = Math.floor((parseInt(resendExpire) - Date.now()) / 1000);
-      setResendTimer(remainingResend > 0 ? remainingResend : 0);
-    } else {
+    if (!resendExpire || remainingResend <= 0) {
       setResendTimer(0);
+    } else {
+      setResendTimer(remainingResend);
     }
-  }, []);
+  }, [emailFromState]);
 
   // Expiry countdown
   useEffect(() => {
@@ -61,7 +80,7 @@ const OTPVerification = () => {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleInputChange = (index, value) => {
@@ -73,51 +92,59 @@ const OTPVerification = () => {
   };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+    if (e.key === "Backspace" && !e.target.value && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
- const handleResendOTP = async () => {
-  try {
-    setIsResending(true);
-    const otpData = { email: emailFromState };
-    await dispatch(resendOtp(otpData)).unwrap();
+  const handleResendOTP = async () => {
+    try {
+      setIsResending(true);
+      const otpData = { email: emailFromState };
+      await dispatch(resendOtp(otpData)).unwrap();
 
-    // Update timers
-    const newExpire = Date.now() + 600000; // 10 minutes
-    localStorage.setItem('otpExpire', newExpire);
-    setExpireTime(300);
+      // Update timers
+      const newExpire = Date.now() + 600000; // 10 minutes
+      localStorage.setItem("otpExpire", newExpire);
+      setExpireTime(600);
 
-    const newResendExpire = Date.now() + 15000; // 15 seconds
-    localStorage.setItem('resendExpire', newResendExpire);
-    setResendTimer(15);
+      const newResendExpire = Date.now() + 15000; // 15 seconds
+      localStorage.setItem("resendExpire", newResendExpire);
+      setResendTimer(15);
 
-    toast.success("OTP resent successfully!", { duration: 2000 });
-  } catch (err) {
-    toast.error(err?.message || "Failed to resend OTP", { duration: 2000 });
-  } finally {
-    setIsResending(false);
-  }
-};
+      toast.success("OTP resent successfully!", { duration: 2000 });
+    } catch (err) {
+      toast.error(err?.message || "Failed to resend OTP", { duration: 2000 });
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   const onSubmit = async (data) => {
-  const otp = Object.values(data).join("");
+    const otp = Object.values(data).join("").trim();
 
-  try {
-    const response = await dispatch(otpVerify({ email: emailFromState, otp })).unwrap();
+    try {
+      const response = await dispatch(
+        otpVerify({ email: emailFromState, otp })
+      ).unwrap();
 
-    toast.success(response?.message || "Account verified successfully!", { duration: 2000 });
-    navigate("/login");
-  } catch (err) {
-    toast.error(err?.message || "Verification failed", { duration: 2000 });
-  }
-};
+      toast.success(
+        response?.message || "Account verified successfully!",
+        { duration: 2000 }
+      );
+      navigate("/login");
+    } catch (err) {
+      toast.error(err?.message || "Verification failed", { duration: 2000 });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-6">
       <div className="max-w-md w-full">
-        <Link to="/login" className="inline-flex items-center text-yellow-400 hover:text-yellow-300 mb-8 transition-colors">
+        <Link
+          to="/login"
+          className="inline-flex items-center text-yellow-400 hover:text-yellow-300 mb-8 transition-colors"
+        >
           <FiArrowLeft className="mr-2" />
           Back to Login
         </Link>
@@ -127,9 +154,15 @@ const OTPVerification = () => {
             <div className="w-16 h-16 bg-yellow-500/10 border border-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <FiMail className="text-2xl text-yellow-400" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Verify Your Email</h1>
-            <p className="text-gray-300">Enter the 4-digit code sent to your email</p>
-            <p className="text-yellow-400 font-semibold mt-1">{emailFromState}</p>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Verify Your Email
+            </h1>
+            <p className="text-gray-300">
+              Enter the 4-digit code sent to your email
+            </p>
+            <p className="text-yellow-400 font-semibold mt-1">
+              {emailFromState}
+            </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -137,10 +170,15 @@ const OTPVerification = () => {
               {[0, 1, 2, 3].map((index) => (
                 <input
                   key={index}
-                  {...register(`digit${index + 1}`, { required: 'All digits are required', pattern: { value: /^[0-9]$/, message: 'Must be a single digit' } })}
+                  {...register(`digit${index + 1}`, {
+                    required: "Required",
+                    pattern: {
+                      value: /^[0-9]$/,
+                      message: "Must be a digit",
+                    },
+                  })}
                   ref={(el) => (inputRefs.current[index] = el)}
                   type="text"
-                  required
                   inputMode="numeric"
                   maxLength="1"
                   onChange={(e) => handleInputChange(index, e.target.value)}
@@ -151,13 +189,22 @@ const OTPVerification = () => {
               ))}
             </div>
 
-            {errors.digit1 && <p className="text-red-400 text-center text-sm">{errors.digit1.message}</p>}
+            {/* Show error if any digit missing */}
+            {Object.values(errors).length > 0 && (
+              <p className="text-red-400 text-center text-sm">
+                Please enter all 4 digits
+              </p>
+            )}
 
             <div className="text-center mb-6">
               <div className="flex items-center justify-center text-gray-400 text-sm">
                 <FiClock className="mr-2" />
                 <span>Code expires in </span>
-                <span className={`ml-1 font-semibold ${expireTime < 60 ? 'text-red-400' : 'text-yellow-400'}`}>
+                <span
+                  className={`ml-1 font-semibold ${
+                    expireTime < 60 ? "text-red-400" : "text-yellow-400"
+                  }`}
+                >
                   {formatTime(expireTime)}
                 </span>
               </div>
@@ -173,7 +220,9 @@ const OTPVerification = () => {
                   <Loader className="animate-spin h-5 w-5 mr-2" />
                   Verifying...
                 </span>
-              ) : 'Verify Code'}
+              ) : (
+                "Verify Code"
+              )}
             </button>
           </form>
 
@@ -190,15 +239,20 @@ const OTPVerification = () => {
                 </span>
               ) : resendTimer > 0 ? (
                 `Request new code in ${resendTimer}s`
-              ) : 'Send new verification code'}
+              ) : (
+                "Send new verification code"
+              )}
             </button>
           </div>
         </div>
 
         <div className="text-center mt-8">
           <p className="text-gray-400 text-sm">
-            Didn't receive the email? Check your spam folder or{' '}
-            <button onClick={handleResendOTP} className="text-yellow-400 hover:text-yellow-300 underline">
+            Didn't receive the email? Check your spam folder or{" "}
+            <button
+              onClick={handleResendOTP}
+              className="text-yellow-400 hover:text-yellow-300 underline"
+            >
               contact support
             </button>
           </p>

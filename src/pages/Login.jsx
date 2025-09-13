@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { User, Mail, Lock, Loader, EyeOff, Eye } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, registerUser, fetchProfile } from "../redux/slices/authSlice.js";
+import {
+  loginUser,
+  registerUser,
+  fetchProfile,
+} from "../redux/slices/authSlice.js";
 import { mergeCart } from "../redux/slices/cartSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location  = useLocation()
+  const location = useLocation();
   const { loading } = useSelector((state) => state.auth);
   // Get redirect path from query params, fallback to "/"
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
@@ -24,7 +27,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-   const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
     try {
       if (isLogin) {
         const res = await dispatch(
@@ -36,12 +39,12 @@ const Login = () => {
         // Merge guest cart if guestId exists
         const guestId = localStorage.getItem("guestId");
         if (guestId) {
-          await dispatch(mergeCart({ guestId, user: res.user }));
+           dispatch(mergeCart({ guestId, user: res.user }));
         }
 
-  // Fetch latest profile so navbar/profile image updates
-  await dispatch(fetchProfile());
-  navigate(redirect); //  redirect back after login
+        // Fetch latest profile so navbar/profile image updates
+          dispatch(fetchProfile());
+        navigate(redirect); //  redirect back after login
       } else {
         const res = await dispatch(registerUser(data)).unwrap();
 

@@ -61,6 +61,8 @@ export const FetchProductDetails = createAsyncThunk("products/fetchById",async (
   return response.data
 })
 
+
+// not use currently
 export const updateProductById = createAsyncThunk("products/updateById",async ({id,productData})=> {
 const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`,productData,{
   headers:{
@@ -152,7 +154,7 @@ const productSlice = createSlice({
       state.error = action.error.message
     })
 
-    // updated product
+    // updated product but used currently
      .addCase(updateProductById.pending , (state)=> {
       state.loading = true,
       state.error = null

@@ -223,7 +223,11 @@ export const updateProfile = createAsyncThunk(
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/update-profile`,
         data,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
+        }
       );
       return res.data.user;
     } catch (err) {
@@ -233,8 +237,6 @@ export const updateProfile = createAsyncThunk(
     }
   }
 );
-
-
 
 // create slice
 const authSlice = createSlice({
@@ -297,8 +299,13 @@ const authSlice = createSlice({
       })
       .addCase(otpVerify.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload?.user || state.user; // optional: set user if backend returns
+        state.user = action.payload?.user || state.user;
         state.error = null;
+
+        //  localStorage update
+        if (action.payload?.user) {
+          localStorage.setItem("userInfo", JSON.stringify(action.payload.user));
+        }
       })
       .addCase(otpVerify.rejected, (state, action) => {
         state.loading = false;
@@ -352,10 +359,16 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      // verify forgot password
       .addCase(verifyForgotPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload?.user || state.user; // optional: set user if backend returns
+        state.user = action.payload?.user || state.user;
         state.error = null;
+
+        //  localStorage update
+        if (action.payload?.user) {
+          localStorage.setItem("userInfo", JSON.stringify(action.payload.user));
+        }
       })
       .addCase(verifyForgotPassword.rejected, (state, action) => {
         state.loading = false;

@@ -16,6 +16,8 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState(location.state?.tab || "profile");
   const { user } = useSelector((state) => state.auth);
   const [profileImage, setProfileImage] = useState(user?.profileImage || null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUploading, setImageUploading] = useState(false);
   const { updateProfileLoading, updateProfileError } = useSelector(
     (state) => state.auth
   );
@@ -33,7 +35,15 @@ const Profile = () => {
       name: user?.name || "",
       email: user?.email || "",
     },
-  });
+  });  
+
+useEffect(() => {
+  if (user && !user.isVerified) {
+    navigate("/login"); 
+  }
+}, [user, navigate]);
+
+
 
   // Fetch latest profile on mount using Redux thunk
   useEffect(() => {
@@ -74,11 +84,41 @@ const Profile = () => {
   }, [user, setValue]);
 
   // submit also updating the profile
-  const onSubmit = (data) => {
-    // Only send profileImage if a new image was uploaded
+  const onSubmit = async (data) => {
+    let imageUrl = profileImage;
+    if (selectedFile) {
+      setImageUploading(true);
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      try {
+        const { data: uploadData } = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (uploadData.success) {
+          imageUrl = uploadData.imageUrl;
+          setProfileImage(imageUrl);
+          setSelectedFile(null);
+        } else {
+          toast.error(uploadData.message || "Upload failed");
+          setImageUploading(false);
+          return;
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Upload error");
+        setImageUploading(false);
+        return;
+      }
+      setImageUploading(false);
+    }
     const updateData = { name: data.name };
-    if (profileImage && profileImage !== user?.profileImage) {
-      updateData.profileImage = profileImage;
+    if (imageUrl && imageUrl !== user?.profileImage) {
+      updateData.profileImage = imageUrl;
     }
     dispatch(updateProfile(updateData)).then((action) => {
       if (action.type.endsWith("/fulfilled")) {
@@ -88,34 +128,13 @@ const Profile = () => {
     });
   };
 
-  // image uloading function backend routes no thunk
-  const handleImageUpload = async (e) => {
+  // Only set file, don't upload yet
+  const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (data.success) {
-        setProfileImage(data.imageUrl); // Cloudinary URL
-      } else {
-        toast.error(data.message || "Upload failed");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Upload error");
-      console.error("Upload Error:", error);
-    }
+    setSelectedFile(file);
+    // Optionally show preview
+    setProfileImage(URL.createObjectURL(file));
   };
 
   // Delete profile image
@@ -221,10 +240,24 @@ const Profile = () => {
                   <User size={40} color="#d1d5db" />
                 </div>
               )}
-              {profileImage && (
+              {imageUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <Loader className="h-8 w-8 text-yellow-400 animate-spin" />
+                </div>
+              )}
+              {profileImage && !imageUploading && (
                 <div
-                  onClick={handleDeleteImage}
+                  onClick={() => {
+                    // If previewing a new image (not uploaded yet), just clear preview
+                    if (selectedFile) {
+                      setProfileImage(user?.profileImage || null);
+                      setSelectedFile(null);
+                    } else {
+                      handleDeleteImage();
+                    }
+                  }}
                   className="absolute top-2 right-0 bg-red-600 p-1 rounded-full cursor-pointer hover:bg-red-700 transition"
+                  title="Delete profile image"
                 >
                   <Trash size={16} color="#fff" />
                 </div>
@@ -238,7 +271,8 @@ const Profile = () => {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleImageUpload}
+                onChange={handleImageSelect}
+                disabled={imageUploading}
               />
             </label>
           </div>

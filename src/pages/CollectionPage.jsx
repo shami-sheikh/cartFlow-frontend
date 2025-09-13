@@ -6,6 +6,7 @@ import SortOptionFilter from "../components/Products/SortOptionFilter";
 import ProductGrid from "../components/Products/ProductGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductByFilters } from "../redux/slices/productSlice";
+import axios from "axios";
 
 // Debounce hook
 const useDebouncedEffect = (effect, deps, delay) => {
@@ -40,6 +41,21 @@ const CollectionPage = () => {
   const {collectionId} = useParams()
   const dispatch = useDispatch()
   const { products,loading, error } = useSelector((state) => state.products);
+  // State for all products (unfiltered, for color extraction)
+  const [allProducts, setAllProducts] = useState([]);
+
+  // Fetch all products on mount (for sidebar color extraction)
+  useEffect(() => {
+    async function fetchAll() {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/all-collections`);
+        setAllProducts(res.data.products || []);
+      } catch (e) {
+        setAllProducts([]);
+      }
+    }
+    fetchAll();
+  }, []);
   const queryParams = Object.fromEntries([...searchParams]);
   useEffect(() => {
     dispatch(fetchProductByFilters({
@@ -129,7 +145,11 @@ const CollectionPage = () => {
           overflow-y-auto`}
       >
         <div className="p-4 lg:p-6">
-          <FilterSidebar onFilterChange={handleFilterChange} filters={filters} />
+          <FilterSidebar 
+            onFilterChange={handleFilterChange} 
+            filters={filters} 
+            products={allProducts}
+          />
         </div>
       </div>
 

@@ -1,7 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
-const FilterSidebar = ({ onFilterChange, filters }) => {
+// Color name to hex mapping (extend as needed)
+const COLOR_HEX_MAP = {
+  Red: "#FF4D4F",
+  Blue: "#1890FF",
+  Green: "#52C41A",
+  Black: "#000000",
+  White: "#FFFFFF",
+  Yellow: "#FADB14",
+  Pink: "#FF85C0",
+  Beige: "#F5F5DC",
+  Navy: "#001F3F",
+  Gray: "#8C8C8C",
+  "Navy Blue": "#001F3F",
+  Burgundy: "#800020",
+  "Light Blue": "#ADD8E6",
+  "Dark Wash": "#223A5E",
+  "Tropical Print": "#2EC4B6",
+  "Navy Palms": "#254E70",
+  Olive: "#808000",
+  Charcoal: "#36454F",
+  "Dark Green": "#013220",
+  Brown: "#8B4513",
+  Lavender: "#E6E6FA",
+  "Light Blue": "#ADD8E6",
+  Khaki: "#F0E68C",
+};
+
+const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
   const { register, watch, setValue, reset } = useForm({
     defaultValues: filters,
   });
@@ -15,21 +42,24 @@ const FilterSidebar = ({ onFilterChange, filters }) => {
   }, [filters, reset]);
 
   const categories = ["Top Wear", "Bottom Wear"];
-  const colors = [
-    { name: "Red", hex: "#FF4D4F" },
-    { name: "Blue", hex: "#1890FF" },
-    { name: "Green", hex: "#52C41A" },
-    { name: "Black", hex: "#000000" },
-    { name: "White", hex: "#FFFFFF" },
-    { name: "Yellow", hex: "#FADB14" },
-    { name: "Pink", hex: "#FF85C0" },
-    { name: "Beige", hex: "#F5F5DC" },
-    { name: "Navy", hex: "#001F3F" },
-    { name: "Gray", hex: "#8C8C8C" },
-  ];
+  // Dynamically extract unique colors from products
+  const colors = useMemo(() => {
+    const colorSet = new Set();
+    products.forEach((p) => {
+      if (Array.isArray(p.colors)) {
+        p.colors.forEach((c) => colorSet.add(c));
+      }
+    });
+    // Return as array of { name, hex }
+    return Array.from(colorSet).map((name) => ({
+      name,
+      hex: COLOR_HEX_MAP[name] || "#CCCCCC", // fallback gray
+    }));
+  }, [products]);
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const materials = ["Cotton", "Polyester", "Wool", "Denim", "Linen", "Viscose", "Fleece"];
-  const brands = ["Urban Threads", "Modern Fit", "Street Style", "Beach Breeze", "Fashionista", "ChicStyle"];
+  const materials = ["Cotton", "Polyester", "Denim", "Viscose", "Fleece"];
+  // Only show top 5 brands
+  const brands = ["Nike", "Zara", "Levi's", "Adidas", "Reebok"];
   const genders = ["Men", "Women"];
 
   const filter = {
@@ -84,18 +114,22 @@ const FilterSidebar = ({ onFilterChange, filters }) => {
 
       {/* Color */}
       <div className="mt-2 flex flex-wrap gap-2">
-        {colors.map((c) => (
-          <button
-            type="button"
-            key={c.name}
-            onClick={() => toggleArrayValue("color", c.name)}
-            className={`w-7 h-7 rounded-full transform transition-transform duration-300 hover:scale-110 ${
-              (filter.color || []).includes(c.name) && "ring-2 ring-[#eacd89]"
-            }`}
-            style={{ backgroundColor: c.hex }}
-            title={c.name}
-          />
-        ))}
+        {colors.length === 0 ? (
+          <span className="text-gray-400 text-sm">No colors found</span>
+        ) : (
+          colors.map((c) => (
+            <button
+              type="button"
+              key={c.name}
+              onClick={() => toggleArrayValue("color", c.name)}
+              className={`w-7 h-7 rounded-full transform transition-transform duration-300 hover:scale-110 ${
+                (filter.color || []).includes(c.name) && "ring-2 ring-[#eacd89]"
+              }`}
+              style={{ backgroundColor: c.hex }}
+              title={c.name}
+            />
+          ))
+        )}
       </div>
 
       {/* Sizes */}
@@ -114,7 +148,7 @@ const FilterSidebar = ({ onFilterChange, filters }) => {
       {/* Brands */}
       <div>
         <label className="font-bold text-[#eacd89]">Brands</label>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-col flex-wrap gap-2">
           {brands.map((b) => (
             <label key={b} className="flex items-center text-nowrap gap-1 cursor-pointer p-1 rounded-lg hover:bg-yellow-400 hover:text-black transition-colors duration-300">
               <input type="checkbox" value={b} {...register("brand")} className="w-4 h-4 text-yellow-400" />

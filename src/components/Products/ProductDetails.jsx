@@ -62,6 +62,32 @@ const ProductDetails = ({ productId }) => {
   const selectedSize = watch("size");
   const selectedColor = watch("color");
 
+  // Color name to hex mapping (extend as needed)
+  const COLOR_HEX_MAP = {
+    Red: "#FF4D4F",
+    Blue: "#1890FF",
+    Green: "#52C41A",
+    Black: "#000000",
+    White: "#FFFFFF",
+    Yellow: "#FADB14",
+    Pink: "#FF85C0",
+    Beige: "#F5F5DC",
+    Navy: "#001F3F",
+    Gray: "#8C8C8C",
+    "Navy Blue": "#001F3F",
+    Burgundy: "#800020",
+    "Light Blue": "#ADD8E6",
+    "Dark Wash": "#223A5E",
+    "Tropical Print": "#2EC4B6",
+    "Navy Palms": "#254E70",
+    Olive: "#808000",
+    Charcoal: "#36454F",
+    "Dark Green": "#013220",
+    Brown: "#8B4513",
+    Lavender: "#E6E6FA",
+    Khaki: "#F0E68C",
+  };
+
   const handleIncrease = () => setValue("quantity", quantity + 1);
   const handleDecrease = () =>
     setValue("quantity", quantity > 1 ? quantity - 1 : 1);
@@ -91,7 +117,7 @@ const ProductDetails = ({ productId }) => {
     }
   };
 
-  if (loading) return <p className="text-center">Loading...</p>;
+  if (loading) return <p className="text-center py-20">Loading...</p>;
   if (error) return <p className="text-center">Error: {error}</p>;
 
   return (
@@ -118,60 +144,82 @@ const ProductDetails = ({ productId }) => {
           </motion.div>
         )}
 
-        {/* Product card */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-6xl mx-auto p-8 rounded-2xl shadow-2xl bg-[#26211d] text-white"
+          transition={{ duration: 0.6 }}
+          className="max-w-6xl mx-auto"
         >
           {selectedProduct && (
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col md:flex-row gap-10"
-            >
-              {/* Thumbnails for desktop (vertical) */}
-              <div className="hidden md:flex flex-col space-y-4">
-                {selectedProduct.images?.map((image, index) => (
-                  <motion.img
-                    key={index}
-                    src={image.url}
-                    alt={image.alt || "thumbnail"}
-                    whileHover={{ scale: 1.1 }}
-                    className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-[#eacd89] transition"
-                    onClick={() => setMainImage(image.url)}
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row gap-8">
+              {/* Left Side - Images */}
+              <div className="md:w-1/2">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6 }}
+                  className="mb-4"
+                >
+                  <img
+                    src={mainImage}
+                    alt="Main Product"
+                    className="w-full max-h-[500px] object-cover rounded-xl shadow-lg border border-[#eacd89]/40"
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/500x500/1a1a1a/eacd89?text=Image+Not+Found";
+                    }}
                   />
-                ))}
-              </div>
+                </motion.div>
 
-              {/* Main Image */}
-              <motion.div
-                layout
-                className="md:w-1/2 flex flex-col items-center"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-              >
-                <img
-                  src={mainImage}
-                  alt="Main Product"
-                  className="w-full max-h-[500px] object-cover rounded-xl shadow-lg border border-[#eacd89]/40"
-                />
-
-                {/* Thumbnails for mobile (horizontal scroll) */}
-                <div className="flex md:hidden overflow-x-auto gap-3 mt-4 w-full">
+                {/* Thumbnails for desktop (grid layout) */}
+                <div className="hidden md:grid grid-cols-4 gap-3">
                   {selectedProduct.images?.map((image, index) => (
-                    <motion.img
+                    <motion.div
                       key={index}
-                      src={image.url}
-                      alt={image.alt || "thumbnail"}
-                      whileHover={{ scale: 1.1 }}
-                      className="w-20 h-20 object-cover rounded-lg cursor-pointer border border-[#eacd89] flex-shrink-0"
+                      whileHover={{ scale: 1.05 }}
+                      className={`cursor-pointer border-2 rounded-lg overflow-hidden ${
+                        mainImage === image.url 
+                          ? "border-yellow-400" 
+                          : "border-[#eacd89]"
+                      }`}
                       onClick={() => setMainImage(image.url)}
-                    />
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Thumbnail ${index + 1}`}
+                        className="w-full h-20 object-cover"
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/100x100/1a1a1a/eacd89?text=Image+Error";
+                        }}
+                      />
+                    </motion.div>
                   ))}
                 </div>
-              </motion.div>
+
+                {/* Thumbnails for mobile (horizontal scroll) */}
+                <div className="flex md:hidden overflow-x-auto gap-3 mt-4 w-full pb-2">
+                  {selectedProduct.images?.map((image, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ scale: 1.1 }}
+                      className={`flex-shrink-0 cursor-pointer border-2 rounded-lg overflow-hidden ${
+                        mainImage === image.url 
+                          ? "border-yellow-400" 
+                          : "border-[#eacd89]"
+                      }`}
+                      onClick={() => setMainImage(image.url)}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Thumbnail ${index + 1}`}
+                        className="w-20 h-20 object-cover"
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/100x100/1a1a1a/eacd89?text=Image+Error";
+                        }}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
 
               {/* Right Side */}
               <div className="md:w-1/2 space-y-6">
@@ -258,27 +306,24 @@ const ProductDetails = ({ productId }) => {
                       Colors
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProduct.colors.map((color, index) => (
-                        <motion.button
-                          key={index}
-                          type="button"
-                          whileHover={{ scale: 1.15 }}
-                          onClick={() => setValue("color", color)}
-                          className={`px-4 py-3.5 rounded-full cursor-pointer transition 
-                            ${
+                      {selectedProduct.colors.map((color, index) => {
+                        const hex = COLOR_HEX_MAP[color] || "#CCCCCC";
+                        return (
+                          <motion.button
+                            key={index}
+                            type="button"
+                            whileHover={{ scale: 1.15 }}
+                            onClick={() => setValue("color", color)}
+                            className={`w-8 h-8 rounded-full cursor-pointer transition border-2 ${
                               selectedColor === color
-                                ? "border-2 border-yellow-400"
-                                : ""
-                            } `}
-                          style={{
-                            backgroundColor: color.toLowerCase(),
-                            filter:
-                              selectedColor === color
-                                ? "brightness(0.9)"
-                                : "none",
-                          }}
-                        />
-                      ))}
+                                ? "border-yellow-400"
+                                : "border-transparent"
+                            }`}
+                            style={{ backgroundColor: hex, filter: selectedColor === color ? "brightness(0.9)" : "none" }}
+                            title={color}
+                          ></motion.button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

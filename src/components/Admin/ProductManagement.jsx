@@ -72,13 +72,13 @@ const ProductManagement = () => {
           <h2 className="text-4xl font-bold text-white">
             Product <span className="text-yellow-400">Management</span>
           </h2>
-          {/* <Link
+          <Link
             to="/admin/products/add"
             className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold lg:py-3 lg:px-6 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-yellow-500/20"
           >
             <FiPlus className="text-lg" />
             Add Product
-          </Link> */}
+          </Link>
         </div>
 
         {/* Error Message */}

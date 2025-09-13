@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { X, Upload } from "lucide-react";
 import { addAdminProduct } from "../../redux/slices/adminProductSlice";
+import { toast } from "sonner";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -14,8 +16,8 @@ const AddProduct = () => {
     name: "",
     description: "",
     price: "",
-    salePrice: "",
-    stock: "",
+    countInStock: "",
+    sku: "",
     category: "",
     brand: "",
     sizes: "",
@@ -25,7 +27,6 @@ const AddProduct = () => {
     gender: "",
   });
 
-  const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [uploading, setUploading] = useState(false);
 
@@ -38,191 +39,296 @@ const AddProduct = () => {
   // upload images to Cloudinary (via your backend route /api/upload)
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
-    setUploading(true);
+    if (files.length === 0) return;
+
+    const formDataUpload = new FormData();
+    files.forEach(file => {
+      formDataUpload.append("image", file);
+    });
 
     try {
-      const uploadedUrls = [];
+      setUploading(true);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+        formDataUpload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`
+          }
+        }
+      );
 
-      for (let file of files) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/upload`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        uploadedUrls.push(data.url);
-      }
-
-      setImages((prev) => [...prev, ...uploadedUrls]);
-      setImagePreviews((prev) => [...prev, ...uploadedUrls]);
+      // Add new images to previews
+      const newImageUrl = data.imageUrl;
+      setImagePreviews((prev) => [...prev, newImageUrl]);
     } catch (err) {
-      console.error("Image upload failed", err);
+      console.error("Upload failed", err);
     } finally {
       setUploading(false);
     }
+  };
+
+  const removeImage = (index) => {
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   // submit product
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Frontend validation
+    if (!formData.name || !formData.sku || !formData.description || !formData.price || !formData.countInStock || !formData.category || !formData.collections) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    if (imagePreviews.length === 0) {
+      toast.error("Please upload at least one product image");
+      return;
+    }
+
+    // Clean up sizes/colors
+    const sizesArr = formData.sizes
+      ? formData.sizes.split(",").map((s) => s.trim()).filter(Boolean)
+      : [];
+    const colorsArr = formData.colors
+      ? formData.colors.split(",").map((c) => c.trim()).filter(Boolean)
+      : [];
+
     const productData = {
       ...formData,
       price: parseFloat(formData.price),
-      salePrice: formData.salePrice ? parseFloat(formData.salePrice) : null,
-      stock: parseInt(formData.stock),
-      sizes: formData.sizes
-        ? formData.sizes.split(",").map((s) => s.trim())
-        : [],
-      colors: formData.colors
-        ? formData.colors.split(",").map((c) => c.trim())
-        : [],
-      images,
+      countInStock: parseInt(formData.countInStock),
+      sizes: sizesArr,
+      colors: colorsArr,
+      images: imagePreviews.map(url => ({ url, altText: formData.name }))
     };
 
     dispatch(addAdminProduct(productData))
       .unwrap()
-      .then(() => navigate("/admin/products"))
-      .catch((err) => console.error(err));
+      .then(() => {
+        toast.success("Product created successfully!");
+        navigate("/admin/products");
+      })
+      .catch((err) => {
+        toast.error(err?.message || "Failed to create product");
+        console.error(err);
+      });
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center p-6">
-      <div className="bg-gray-800 shadow-xl rounded-2xl w-full max-w-3xl p-8">
-        <h1 className="text-3xl font-bold text-yellow-400 mb-6">
-          Add New Product
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-[#1a1714] to-[#2a2520] py-8 px-4">
+      <div className="max-w-4xl mx-auto bg-[#1F1A16] rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] p-6">
+          <h2 className="text-3xl font-bold text-black">Add New Product</h2>
+          <p className="text-black/80 mt-1">Create a new product for your catalog</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Product Name"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-            required
-          />
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Description"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            name="price"
-            type="number"
-            value={formData.price}
-            onChange={handleChange}
-            placeholder="Price"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            name="salePrice"
-            type="number"
-            value={formData.salePrice}
-            onChange={handleChange}
-            placeholder="Sale Price"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="stock"
-            type="number"
-            value={formData.stock}
-            onChange={handleChange}
-            placeholder="Stock Count"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-            required
-          />
-          <input
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            placeholder="Category"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            placeholder="Brand"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="sizes"
-            value={formData.sizes}
-            onChange={handleChange}
-            placeholder="Sizes (comma separated)"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="colors"
-            value={formData.colors}
-            onChange={handleChange}
-            placeholder="Colors (comma separated)"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="collections"
-            value={formData.collections}
-            onChange={handleChange}
-            placeholder="Collection"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="material"
-            value={formData.material}
-            onChange={handleChange}
-            placeholder="Material"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
-          <input
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            placeholder="Gender"
-            className="border p-3 w-full rounded bg-gray-700 text-white"
-          />
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Basic Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Product Name *</label>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                placeholder="Enter product name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">SKU *</label>
+              <input
+                name="sku"
+                value={formData.sku}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                placeholder="Product SKU"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-semibold text-[#f6e6b7]">Description *</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={4}
+              className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              placeholder="Describe your product..."
+              required
+            />
+          </div>
+
+          {/* Price & Stock */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Price (₹) *</label>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                required
+                min="0"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Stock Count *</label>
+              <input
+                type="number"
+                name="countInStock"
+                value={formData.countInStock}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                required
+                min="0"
+              />
+            </div>
+          </div>
+
+          {/* Category, Brand, Collection, Material, Gender */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Category *</label>
+              <input
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                placeholder="Enter category"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Brand</label>
+              <input
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                placeholder="Enter brand"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Collection *</label>
+              <input
+                name="collections"
+                value={formData.collections}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                placeholder="Enter collection"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Material</label>
+              <input
+                name="material"
+                value={formData.material}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                placeholder="Enter material"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Gender</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              >
+                <option value="">Select Gender</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Unisex">Unisex</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <label className="block text-sm font-semibold text-[#f6e6b7]">Sizes (comma separated)</label>
+            <input
+              name="sizes"
+              value={formData.sizes}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              placeholder="S, M, L, XL"
+            />
+          </div>
+
+          {/* Colors */}
+          <div>
+            <label className="block text-sm font-semibold text-[#f6e6b7]">Colors (comma separated)</label>
+            <input
+              name="colors"
+              value={formData.colors}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              placeholder="Red, Blue, Green"
+            />
+          </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block font-medium mb-2">Upload Images</label>
-            <input
-              type="file"
-              multiple
-              onChange={handleImageUpload}
-              className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 
-                         file:rounded-full file:border-0 file:text-sm file:font-semibold 
-                         file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-600"
-            />
-            <div className="flex flex-wrap gap-2 mt-3">
-              {imagePreviews.map((img, i) => (
-                <img
-                  key={i}
-                  src={img}
-                  alt={`Preview ${i}`}
-                  className="w-20 h-20 object-cover rounded-lg border border-gray-600"
-                />
-              ))}
+            <label className="block text-sm font-semibold text-[#f6e6b7]">Product Images</label>
+            <div className="border-2 border-dashed border-[#3D342D] rounded-lg p-6 text-center">
+              {uploading && <p className="text-yellow-400">Uploading images...</p>}
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload"
+              />
+              <label htmlFor="image-upload" className="cursor-pointer">
+                <Upload className="mx-auto text-[#C6A15B] mb-2" size={24} />
+                <p className="text-gray-400">Click to upload images or drag and drop</p>
+                <p className="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              </label>
             </div>
-            {uploading && <p className="text-yellow-400 mt-2">Uploading...</p>}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                {imagePreviews.map((img, i) => (
+                  <div key={i} className="relative group">
+                    <img src={img} alt={`preview-${i}`} className="w-full h-32 object-cover rounded-lg" />
+                    <button type="button" onClick={() => removeImage(i)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading || uploading}
-            className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 
-                       hover:from-yellow-600 hover:to-yellow-700 text-gray-900 
-                       font-semibold px-8 py-3 rounded-lg transition-all 
-                       duration-300 shadow-lg hover:shadow-yellow-500/20 
-                       disabled:opacity-50"
-          >
-            {loading || uploading ? "Saving..." : "Create Product"}
-          </button>
+          {/* Submit */}
+          <div className="flex gap-4 pt-6 border-t border-[#3D342D]">
+            <button 
+              type="submit" 
+              disabled={loading || uploading}
+              className="px-8 py-3 bg-[#C6A15B] text-black font-semibold rounded-lg hover:bg-[#d4b16c] transition-colors disabled:opacity-50"
+            >
+              {loading || uploading ? "Creating Product..." : "Create Product"}
+            </button>
+            <button type="button" onClick={() => navigate("/admin/products")} className="px-8 py-3 border border-[#3D342D] text-gray-300 rounded-lg hover:bg-[#3D342D] transition-colors">
+              Cancel
+            </button>
+          </div>
 
           {error && <p className="text-red-400 mt-2">{error}</p>}
         </form>

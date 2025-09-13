@@ -15,6 +15,7 @@ import AdminLayout from "./components/Admin/AdminLayout.jsx";
 import AdminHomePage from "./pages/AdminHomePage.jsx";
 import UserManagement from "./components/Admin/UserManagement.jsx";
 import ProductManagement from "./components/Admin/ProductManagement.jsx";
+import AddProduct from "./components/Admin/AddProduct.jsx";
 import ProductEditPage from "./components/Admin/ProductEditPage.jsx";
 import OrderManagement from "./components/Admin/OrderManagement.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
@@ -61,6 +62,7 @@ const App = () => {
             <Route index element={<AdminHomePage />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="products" element={<ProductManagement />} />
+            <Route path="/admin/products/add" element={<AddProduct/>}/>
             <Route path="products/edit/:id" element={<ProductEditPage />} />
             <Route path="orders" element={<OrderManagement />} />
           </Route>
