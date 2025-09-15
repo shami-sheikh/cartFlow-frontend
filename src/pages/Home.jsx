@@ -57,11 +57,11 @@ const Home = () => {
       )}
 
       {/* Women Collection */}
-      <div>
-        <h2 className="capitalize text-yellow-500 font-bold md:text-3xl text-2xl mt-8 text-center ">
+      <div className="p-10">
+        <h2 className="capitalize text-yellow-500 font-bold md:text-3xl text-2xl mt-8  text-center ">
           Top wears for women
         </h2>
-        <div className="h-[3px] w-44 mt-2 mx-auto rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+        <div className="h-[3px] w-44 mt-2 mb-4 mx-auto rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
       <ProductGrid products={products?.products} loading={loading} error={error} />
       </div>
 
