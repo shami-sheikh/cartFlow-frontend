@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -19,6 +20,7 @@ const ProductEditPage = () => {
     name: "",
     description: "",
     price: 0,
+    discountPrice: "",
     countInStock: 0,
     sku: "",
     category: "",
@@ -28,6 +30,8 @@ const ProductEditPage = () => {
     collections: "",
     material: "",
     gender: "",
+    rating: "",
+    numReviews: "",
   });
   const [imagePreviews, setImagePreviews] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -42,6 +46,7 @@ const ProductEditPage = () => {
         name: productDetails.name || "",
         description: productDetails.description || "",
         price: productDetails.price || 0,
+        discountPrice: productDetails.discountPrice || "",
         countInStock: productDetails.countInStock || 0,
         sku: productDetails.sku || "",
         category: productDetails.category || "",
@@ -51,6 +56,8 @@ const ProductEditPage = () => {
         collections: productDetails.collections || "",
         material: productDetails.material || "",
         gender: productDetails.gender || "",
+        rating: productDetails.rating || "",
+        numReviews: productDetails.numReviews || "",
       });
 
       if (productDetails.images?.length > 0) {
@@ -117,7 +124,10 @@ const ProductEditPage = () => {
 
     dispatch(updateAdminProduct({ id, updates: updatedData }))
       .unwrap()
-      .then(() => navigate("/admin/products"))
+      .then(() => {
+        toast.success("Product updated successfully!");
+        setTimeout(() => navigate("/admin/products"), 800);
+      })
       .catch(console.error);
   };
 
@@ -216,8 +226,21 @@ const ProductEditPage = () => {
             </div>
           </div>
 
-          {/* Category, Brand, Collection, Material, Gender */}
+          {/* Discount Price, Category, Brand, Collection, Material, Gender, Rating, NumReviews */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Discount Price</label>
+              <input
+                type="number"
+                name="discountPrice"
+                value={formData.discountPrice}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                min="0"
+                placeholder="Enter discount price (optional)"
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-semibold text-[#f6e6b7]">Category *</label>
               <input
@@ -275,7 +298,38 @@ const ProductEditPage = () => {
                 <option value="">Select Gender</option>
                 <option value="Men">Men</option>
                 <option value="Women">Women</option>
+                <option value="Unisex">Unisex</option>
               </select>
+            </div>
+
+            {/* Rating */}
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Rating</label>
+              <input
+                type="number"
+                name="rating"
+                value={formData.rating}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                min="0"
+                max="5"
+                step="0.1"
+                placeholder="Enter rating (0-5)"
+              />
+            </div>
+
+            {/* Number of Reviews */}
+            <div>
+              <label className="block text-sm font-semibold text-[#f6e6b7]">Number of Reviews</label>
+              <input
+                type="number"
+                name="numReviews"
+                value={formData.numReviews}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                min="0"
+                placeholder="Enter number of reviews"
+              />
             </div>
           </div>
 

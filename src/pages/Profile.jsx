@@ -101,7 +101,8 @@ useEffect(() => {
           }
         );
         if (uploadData.success) {
-          imageUrl = uploadData.imageUrl;
+          // Support both imageUrl (string) and imageUrls (array)
+          imageUrl = uploadData.imageUrl || (Array.isArray(uploadData.imageUrls) ? uploadData.imageUrls[0] : undefined);
           setProfileImage(imageUrl);
           setSelectedFile(null);
         } else {

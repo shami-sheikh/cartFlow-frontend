@@ -194,7 +194,7 @@ const OrderManagement = () => {
           <div className="bg-gray-800 bg-opacity-50 border border-gray-700 p-6 rounded-2xl">
             <div className="text-3xl font-bold text-yellow-400 mb-2">
               ₹
-              {orders?.reduce((total, order) => total + order.totalPrice, 0) || 0}
+              {orders?.reduce((total, order) => total + order.totalPrice, 0).toFixed(2) || 0}
             </div>
             <div className="text-gray-300">Total Revenue</div>
           </div>

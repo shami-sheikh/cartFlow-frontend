@@ -27,8 +27,8 @@ const CollectionPage = () => {
       size: params.getAll("size") || [],
       material: params.getAll("material") || [],
       brand: params.getAll("brand") || [],
-      minPrice: obj.minPrice || 0,
-      maxPrice: obj.maxPrice || 100,
+      minPrice: obj.minPrice !== undefined ? Number(obj.minPrice) : 0,
+      maxPrice: obj.maxPrice !== undefined ? Number(obj.maxPrice) : 1000,
       sort: obj.sort || "",
       search: obj.search || "",
     };
@@ -61,8 +61,8 @@ const CollectionPage = () => {
     dispatch(fetchProductByFilters({
       collectionId,
       ...queryParams,
-      minPrice: queryParams.minPrice || 0,
-      maxPrice: queryParams.maxPrice || 100,
+      minPrice: queryParams.minPrice !== undefined ? Number(queryParams.minPrice) : 0,
+      maxPrice: queryParams.maxPrice !== undefined ? Number(queryParams.maxPrice) : 1000,
       sort: queryParams.sort || "",
       search: queryParams.search || ""
     }));
@@ -172,6 +172,7 @@ const CollectionPage = () => {
           loading={loading} 
           error={error}
           searchTerm={queryParams.search || ""}
+          selectedColors={filters.color || []}
         />
       </div>
     </div>

@@ -12,33 +12,33 @@ const COLOR_HEX_MAP = {
   Pink: "#FF85C0",
   Beige: "#F5F5DC",
   Navy: "#001F3F",
-  Gray: "#8C8C8C",
   "Navy Blue": "#001F3F",
+  Gray: "#8C8C8C",
   Burgundy: "#800020",
   "Light Blue": "#ADD8E6",
-  "Dark Wash": "#223A5E",
-  "Tropical Print": "#2EC4B6",
-  "Navy Palms": "#254E70",
+  "Dark Wash": "#223A5E",      
+  "Tropical Print": "#2EC4B6", 
+  "Navy Palms": "#254E70",     
   Olive: "#808000",
   Charcoal: "#36454F",
   "Dark Green": "#013220",
   Brown: "#8B4513",
   Lavender: "#E6E6FA",
-  "Light Blue": "#ADD8E6",
   Khaki: "#F0E68C",
 };
+
 
 const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
   const { register, watch, setValue, reset } = useForm({
     defaultValues: filters,
   });
   // Local state for price range
-  const [price, setPrice] = React.useState(filters.maxPrice || 100);
+  const [price, setPrice] = React.useState(filters.maxPrice || 1000);
 
   // Reset form when filters prop changes (from URL or parent)
   useEffect(() => {
     reset(filters);
-    setPrice(filters.maxPrice || 100);
+    setPrice(filters.maxPrice || 1000);
   }, [filters, reset]);
 
   const categories = ["Top Wear", "Bottom Wear"];
@@ -56,7 +56,7 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
       hex: COLOR_HEX_MAP[name] || "#CCCCCC", // fallback gray
     }));
   }, [products]);
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  const sizes = ["S", "M", "L", "XL", "XXL"];
   const materials = ["Cotton", "Polyester", "Denim", "Viscose", "Fleece"];
   // Only show top 5 brands
   const brands = ["Nike", "Zara", "Levi's", "Adidas", "Reebok"];
@@ -177,7 +177,7 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
         <input
           type="range"
           min={0}
-          max={100}
+          max={1000}
           value={price}
           onChange={e => setPrice(Number(e.target.value))}
           className="w-full h-2 bg-gray-700 cursor-pointer rounded-lg accent-yellow-400"

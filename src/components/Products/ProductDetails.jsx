@@ -15,13 +15,12 @@ import { motion } from "framer-motion";
 
 const ProductDetails = ({ productId }) => {
   const dispatch = useDispatch();
-  const { selectedProduct, similar, loading, error } = useSelector(
-    (state) => state.products
-  );
+  const { selectedProduct, similar, loading, error } = useSelector((state) => state.products);
+  const cartLoading = useSelector((state) => state.cart.loading);
   const { user, guestId } = useSelector((state) => state.auth);
   const { id } = useParams();
   const [mainImage, setMainImage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // Remove local isLoading, use Redux cartLoading
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -98,23 +97,22 @@ const ProductDetails = ({ productId }) => {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      await dispatch(
-        addToCart({
-          productId: ProductFetchId,
-          quantity,
-          size: selectedSize,
-          color: selectedColor,
-          guestId,
-          userId: user?._id,
-        })
-      );
-      toast.success("Product added to cart", { duration: 2000 });
-      reset({ quantity: 1 }); // reset only quantity
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(
+      addToCart({
+        productId: ProductFetchId,
+        quantity,
+        size: selectedSize,
+        color: selectedColor,
+        image: mainImage,
+        guestId,
+        userId: user?._id,
+      })
+    ).then((action) => {
+      if (!action.error) {
+        toast.success("Product added to cart", { duration: 2000 });
+        reset({ quantity: 1 });
+      }
+    });
   };
 
   if (loading) return <p className="text-center py-20">Loading...</p>;
@@ -331,14 +329,14 @@ const ProductDetails = ({ productId }) => {
                 {/* CTA */}
                 <motion.button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={cartLoading}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`px-6 ${
-                    isLoading && "cursor-not-allowed opacity-50"
+                    cartLoading && "cursor-not-allowed opacity-50"
                   } py-3 w-full border border-[#eacd89] text-[#eacd89] hover:bg-[#eacd89] hover:text-black font-semibold rounded-lg transition flex justify-center items-center`}
                 >
-                  {isLoading ? (
+                  {cartLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       Adding... <PulseLoader size={8} color="#000" />
                     </span>
