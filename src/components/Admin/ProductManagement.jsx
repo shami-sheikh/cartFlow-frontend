@@ -69,12 +69,12 @@ const ProductManagement = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-10">
-          <h2 className="text-4xl font-bold text-white">
+          <h2 className="text-3xl font-bold text-white">
             Product <span className="text-yellow-400">Management</span>
           </h2>
           <Link
             to="/admin/products/add"
-            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold lg:py-3 lg:px-6 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-yellow-500/20"
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold lg:py-3 lg:px-6 px-2 text-center rounded-lg flex items-center gap-2 transition-all duration-300 ml-2 shadow-lg hover:shadow-yellow-500/20"
           >
             <FiPlus className="text-lg" />
             Add Product
