@@ -226,15 +226,16 @@ const ProductManagement = () => {
             <div className="text-gray-300">Categories</div>
           </div>
           <div className="bg-gray-800 bg-opacity-50 border border-gray-700 p-6 rounded-2xl">
-            <div className="text-3xl font-bold text-purple-400 mb-2">
-              ₹
-              {products?.reduce(
-                (total, product) => total + (product.price || 0),
-                0
-              ) || 0}
-            </div>
-            <div className="text-gray-300">Total Value</div>
-          </div>
+  <div className="text-3xl font-bold text-purple-400 mb-2">
+    ₹
+    {(products?.reduce(
+      (total, product) => total + (product.price || 0),
+      0
+    ) || 0).toFixed(2)}
+  </div>
+  <div className="text-gray-300">Total Value</div>
+</div>
+
         </div>
       </div>
 
