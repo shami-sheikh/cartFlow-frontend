@@ -24,6 +24,7 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ForgotPasswordOtpVerification from "./pages/ForgotPasswordOtpVerification.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ScrollToTop from "./components/Products/ScrollToTop.jsx";
+import CustomCursor from "./hooks/CustomCursor.js"
 import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes.jsx";
 import ProtectedRoute from "./components/Common/ProtectedRoute.jsx";
 
@@ -32,6 +33,7 @@ const App = () => {
     <>
       <BrowserRouter>
         <ScrollToTop />
+        <CustomCursor/>
         <Toaster position="top-right" />
         <Scroller />
         <Routes>         

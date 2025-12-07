@@ -51,8 +51,10 @@ const ProductManagement = () => {
   };
 
   const getStockColor = (countInStock) => {
-    if (countInStock === 0) return "text-red-400 bg-red-500/10 border-red-500/20";
-    if (countInStock < 10) return "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+    if (countInStock === 0)
+      return "text-red-400 bg-red-500/10 border-red-500/20";
+    if (countInStock < 10)
+      return "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
     return "text-green-400 bg-green-500/10 border-green-500/20";
   };
 
@@ -105,18 +107,33 @@ const ProductManagement = () => {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Image</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Price</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Stock</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Category</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">
+                    Image
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">
+                    Price
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">
+                    Stock
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {products && products.length > 0 ? (
                   products.map((product) => (
-                    <tr key={product._id} className="hover:bg-gray-750/50 transition-colors">
+                    <tr
+                      key={product._id}
+                      className="hover:bg-gray-750/50 transition-colors"
+                    >
                       <td className="px-6 py-4">
                         <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center">
                           {product.images && product.images.length > 0 ? (
@@ -125,7 +142,7 @@ const ProductManagement = () => {
                               alt={product.images[0].altText || product.name}
                               className="w-full h-full object-cover rounded-lg"
                               onError={(e) => {
-                                e.target.style.display = 'none';
+                                e.target.style.display = "none";
                               }}
                             />
                           ) : (
@@ -149,12 +166,18 @@ const ProductManagement = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-3 py-1 flex text-nowrap rounded-full text-xs font-medium border ${getStockColor(product.countInStock)}`}>
+                        <span
+                          className={`px-3 py-1 flex text-nowrap rounded-full text-xs font-medium border ${getStockColor(
+                            product.countInStock
+                          )}`}
+                        >
                           {product.countInStock} in stock
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-gray-300">{product.category}</span>
+                        <span className="text-gray-300">
+                          {product.category}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
@@ -226,16 +249,17 @@ const ProductManagement = () => {
             <div className="text-gray-300">Categories</div>
           </div>
           <div className="bg-gray-800 bg-opacity-50 border border-gray-700 p-6 rounded-2xl">
-  <div className="text-3xl font-bold text-purple-400 mb-2">
-    ₹
-    {(products?.reduce(
-      (total, product) => total + (product.price || 0),
-      0
-    ) || 0).toFixed(2)}
-  </div>
-  <div className="text-gray-300">Total Value</div>
-</div>
-
+            <div className="text-3xl font-bold text-purple-400 mb-2">
+              ₹
+              {(
+                products?.reduce(
+                  (total, product) => total + (product.price || 0),
+                  0
+                ) || 0
+              ).toFixed(2)}
+            </div>
+            <div className="text-gray-300">Total Value</div>
+          </div>
         </div>
       </div>
 
