@@ -7,8 +7,9 @@
   background-color: #facc15;
   height: 6px;
 }
-
-
+*{
+  padding: 0%;
+}
 #root {
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
@@ -19,7 +20,6 @@ html, body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  /* Prevents iOS Safari from zooming out to fit overflowing content */
   touch-action: pan-y;
 }
 
@@ -31,7 +31,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  position: relative; /* Added to help contain absolute children */
+  position: relative;
 }
 
 ::-webkit-scrollbar {
@@ -48,7 +48,6 @@ body {
     /* Fix 4: Inline elements (like 'a') don't respect width properly without block/inline-block */
     display: block;
     overflow-x: hidden;
-    
   }
 }
 
