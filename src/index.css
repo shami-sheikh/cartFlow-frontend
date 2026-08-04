@@ -48,6 +48,7 @@ body {
     /* Fix 4: Inline elements (like 'a') don't respect width properly without block/inline-block */
     display: block;
     overflow-x: hidden;
+    
   }
 }
 
