@@ -2,22 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* Active dot = line */
 .slick-dots li.slick-active div {
   background-color: #facc15;
   height: 6px;
 }
 
-
-
 #root {
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 html {
   scroll-behavior: smooth;
+  /* Fix 1: Mobile browsers often ignore overflow-x on body alone. Apply it to html. */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -30,26 +31,34 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   width: 100%;
+  /* Fix 2: Strictly cap the body width to the viewport */
+  max-width: 100vw;
 }
-::-webkit-scrollbar{
+
+::-webkit-scrollbar {
   display: none;
 }
 
-@media(max-width:1022px){
-  a.active{
+@media(max-width:1022px) {
+  a.active {
     background-color: black;
     color: white;
     width: 100%;
+    /* Fix 3: Ensure padding doesn't push the element wider than 100% */
+    box-sizing: border-box;
+    /* Fix 4: Inline elements (like 'a') don't respect width properly without block/inline-block */
+    display: block;
     overflow-x: hidden;
   }
 }
-
 
 .custom-shape-divider-bottom-1755711226 {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
+    /* Fix 5: Ensure the divider parent never exceeds screen width */
+    max-width: 100vw;
     overflow: hidden;
     line-height: 0;
 }
@@ -57,6 +66,7 @@ body {
 .custom-shape-divider-bottom-1755711226 svg {
     position: relative;
     display: block;
+    /* The +1.3px is fine as long as the parent has overflow: hidden and max-width: 100vw */
     width: calc(100% + 1.3px);
     height: 150px;
 }
