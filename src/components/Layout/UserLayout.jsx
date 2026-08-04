@@ -17,7 +17,13 @@ const UserLayout = () => {
   return (
     <>
       <Header />
-      <main className="bg-gradient-to-r from-[#3f3224] to-[#131111] text-luxury">
+      <main className=""
+      style={{
+          background:
+            "radial-gradient(circle at 15% 50%, #f8f6f2, #ece7de 25%, #e2dbcd 50%, #f8f6f2 75%)",
+          backgroundSize: "200% auto",
+        }}
+      >
         <Outlet />
       </main>
       <Footer />
