@@ -164,42 +164,46 @@ const AddProduct = () => {
       });
   };
 
+  const inputClasses = "w-full px-4 py-3 bg-[#fcfaf6] border border-[#e1dacd] rounded-xl text-[#0f0d0b] placeholder-[#aba293] focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] hover:border-[#c9973f]/60 transition-colors";
+  const labelClasses = "block text-sm text-[#0f0d0b] mb-2 font-medium";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1714] to-[#2a2520] py-8 px-4">
-      <div className="max-w-4xl mx-auto bg-[#1F1A16] rounded-2xl shadow-2xl overflow-hidden">
-        <div className="bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] p-6">
-          <h2 className="text-3xl font-bold text-black">Add New Product</h2>
-          <p className="text-black/80 mt-1">
+    <div className="min-h-screen bg-[#fcfaf6] py-12 px-4">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-[#ebdccb]/60 overflow-hidden">
+        <div className="p-8 border-b border-[#ebdccb]/60 bg-[#fcfaf6]">
+          <h2
+            className="text-3xl font-light text-[#0f0d0b]"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Add New Product
+          </h2>
+          <p className="text-[#8e8577] mt-2">
             Create a new product for your catalog
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Product Name *
-              </label>
+              <label className={labelClasses}>Product Name *</label>
               <input
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="Enter product name"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                SKU *
-              </label>
+              <label className={labelClasses}>SKU *</label>
               <input
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="Product SKU"
                 required
               />
@@ -208,15 +212,13 @@ const AddProduct = () => {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-[#f6e6b7]">
-              Description *
-            </label>
+            <label className={labelClasses}>Description *</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              className={inputClasses}
               placeholder="Describe your product..."
               required
             />
@@ -225,32 +227,28 @@ const AddProduct = () => {
           {/* Price & Stock */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Price (₹) *
-              </label>
+              <label className={labelClasses}>Price (₹) *</label>
               <input
                 type="number"
                 name="price"
                 placeholder="Enter product price"
                 value={formData.price}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 required
                 min="0"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Stock Count *
-              </label>
+              <label className={labelClasses}>Stock Count *</label>
               <input
                 type="number"
                 name="countInStock"
                 placeholder="Enter stock quantity"
                 value={formData.countInStock}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 required
                 min="0"
               />
@@ -259,15 +257,13 @@ const AddProduct = () => {
 
           {/* Discount Price */}
           <div>
-            <label className="block text-sm font-semibold text-[#f6e6b7]">
-              Discount Price
-            </label>
+            <label className={labelClasses}>Discount Price</label>
             <input
               type="number"
               name="discountPrice"
               value={formData.discountPrice}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              className={inputClasses}
               min="0"
               placeholder="Enter discount price (optional)"
             />
@@ -276,68 +272,58 @@ const AddProduct = () => {
           {/* Category, Brand, Collection, Material, Gender */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Category *
-              </label>
+              <label className={labelClasses}>Category *</label>
               <input
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="Enter category"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Brand
-              </label>
+              <label className={labelClasses}>Brand</label>
               <input
                 name="brand"
                 value={formData.brand}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="Enter brand"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Collection *
-              </label>
+              <label className={labelClasses}>Collection *</label>
               <input
                 name="collections"
                 value={formData.collections}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="Enter collection"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Material
-              </label>
+              <label className={labelClasses}>Material</label>
               <input
                 name="material"
                 value={formData.material}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="Enter material"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Gender
-              </label>
+              <label className={labelClasses}>Gender</label>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
               >
                 <option value="">Select Gender</option>
                 <option value="Men">Men</option>
@@ -348,15 +334,13 @@ const AddProduct = () => {
 
             {/* Rating */}
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Rating
-              </label>
+              <label className={labelClasses}>Rating</label>
               <input
                 type="number"
                 name="rating"
                 value={formData.rating}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 min="0"
                 max="5"
                 step="0.1"
@@ -368,15 +352,13 @@ const AddProduct = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Number of Reviews */}
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Number of Reviews
-              </label>
+              <label className={labelClasses}>Number of Reviews</label>
               <input
                 type="number"
                 name="numReviews"
                 value={formData.numReviews}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 min="0"
                 placeholder="Enter number of reviews"
               />
@@ -384,14 +366,12 @@ const AddProduct = () => {
 
             {/* Sizes */}
             <div>
-              <label className="block text-sm font-semibold text-[#f6e6b7]">
-                Sizes (comma separated)
-              </label>
+              <label className={labelClasses}>Sizes (comma separated)</label>
               <input
                 name="sizes"
                 value={formData.sizes}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+                className={inputClasses}
                 placeholder="S, M, L, XL"
               />
             </div>
@@ -399,58 +379,54 @@ const AddProduct = () => {
 
           {/* Colors */}
           <div>
-            <label className="block text-sm font-semibold text-[#f6e6b7]">
-              Colors (comma separated)
-            </label>
+            <label className={labelClasses}>Colors (comma separated)</label>
             <input
               name="colors"
               value={formData.colors}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#29221C] border border-[#3D342D] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C6A15B] transition-all"
+              className={inputClasses}
               placeholder="Red, Blue, Green"
             />
           </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-semibold text-[#f6e6b7]">
-              Product Images
-            </label>
-            <div className="border-2 border-dashed border-[#3D342D] rounded-lg p-6 text-center">
+            <label className={labelClasses}>Product Images</label>
+            <div className="border-2 border-dashed border-[#ebdccb] bg-[#fcfaf6] hover:border-[#c9973f]/60 transition-colors rounded-xl p-8 text-center cursor-pointer relative">
               {uploading && (
-                <p className="text-yellow-400">Uploading images...</p>
+                <p className="text-[#a87b32] font-medium mb-2">Uploading images...</p>
               )}
               <input
                 type="file"
                 multiple
                 accept="image/*"
                 onChange={handleImageUpload}
-                className="hidden"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 id="image-upload"
               />
-              <label htmlFor="image-upload" className="cursor-pointer">
-                <Upload className="mx-auto text-[#C6A15B] mb-2" size={24} />
-                <p className="text-gray-400">
+              <div className="pointer-events-none">
+                <Upload className="mx-auto text-[#a87b32] mb-3" size={28} />
+                <p className="text-[#5c5548] font-medium">
                   Click to upload images or drag and drop
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#8e8577] mt-1">
                   PNG, JPG, GIF up to 10MB
                 </p>
-              </label>
+              </div>
             </div>
             {imagePreviews.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 {imagePreviews.map((img, i) => (
-                  <div key={i} className="relative group">
+                  <div key={i} className="relative group rounded-xl overflow-hidden border border-[#ebdccb]">
                     <img
                       src={img}
                       alt={`preview-${i}`}
-                      className="w-full h-32 object-cover rounded-lg"
+                      className="w-full h-32 object-cover bg-[#f0ece2]"
                     />
                     <button
                       type="button"
                       onClick={() => removeImage(i)}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 bg-white text-red-500 p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-red-50"
                     >
                       <X size={14} />
                     </button>
@@ -461,24 +437,24 @@ const AddProduct = () => {
           </div>
 
           {/* Submit */}
-          <div className="flex gap-4 pt-6 border-t border-[#3D342D]">
+          <div className="flex gap-4 pt-8 border-t border-[#ebdccb]/60">
             <button
               type="submit"
               disabled={loading || uploading}
-              className="px-8 py-3 bg-[#C6A15B] text-black font-semibold rounded-lg hover:bg-[#d4b16c] transition-colors disabled:opacity-50"
+              className="px-8 py-3 bg-[#0f0d0b] text-white font-semibold rounded-xl hover:bg-[#c9973f] transition-colors disabled:opacity-50"
             >
               {loading || uploading ? "Creating Product..." : "Create Product"}
             </button>
             <button
               type="button"
               onClick={() => navigate("/admin/products")}
-              className="px-8 py-3 border border-[#3D342D] text-gray-300 rounded-lg hover:bg-[#3D342D] transition-colors"
+              className="px-8 py-3 border border-[#ebdccb] text-[#5c5548] font-medium rounded-xl hover:border-[#c9973f]/60 hover:text-[#0f0d0b] transition-colors"
             >
               Cancel
             </button>
           </div>
 
-          {error && <p className="text-red-400 mt-2">{error}</p>}
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </form>
       </div>
     </div>
@@ -486,4 +462,3 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
-

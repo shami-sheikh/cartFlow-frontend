@@ -10,10 +10,10 @@ const UserManagement = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   // Get auth user for admin check
   const { user: authUser, loading: authLoading, error: authError } = useSelector((state) => state.auth);
-  
+
   // Get admin users state
   const { users, loading, error } = useSelector((state) => state.adminUsers);
 
@@ -39,7 +39,7 @@ const UserManagement = () => {
 
   const onSubmit = (data) => {
     const promise = dispatch(addUser(data)).unwrap();
-    
+
     toast.promise(promise, {
       loading: 'Adding user...',
       success: () => {
@@ -60,7 +60,7 @@ const UserManagement = () => {
   const handleDeleteConfirm = () => {
     if (userToDelete) {
       const promise = dispatch(deleteUser(userToDelete._id)).unwrap();
-      
+
       toast.promise(promise, {
         loading: 'Deleting user...',
         success: () => {
@@ -82,7 +82,7 @@ const UserManagement = () => {
 
   const handleRoleChange = (userId, newRole) => {
     const promise = dispatch(updateUser({ id: userId, userData: { role: newRole } })).unwrap();
-    
+
     toast.promise(promise, {
       loading: 'Updating user role...',
       success: 'User role updated successfully!',
@@ -100,44 +100,54 @@ const UserManagement = () => {
   }, [error]);
 
   if (authLoading) {
-    return <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center text-white">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-[#fcfaf6] flex items-center justify-center text-[#8e8577]">
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-8">
+    <div className="min-h-screen bg-[#fcfaf6] px-4 py-12">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <h2 className="text-4xl font-bold mb-10 text-center text-white">
-          User <span className="text-yellow-400">Management</span>
+        <h2
+          className="text-4xl font-light mb-10 text-center text-[#0f0d0b]"
+          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
+          User Management
         </h2>
 
         {/* Add User Form */}
-        <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 text-white p-8 rounded-2xl shadow-xl mb-12">
-          <h3 className="text-2xl font-semibold mb-6 text-center text-yellow-400">
+        <div className="bg-white border border-[#ebdccb]/60 p-8 rounded-2xl shadow-sm mb-12">
+          <h3
+            className="text-2xl font-light mb-6 text-center text-[#0f0d0b]"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
             Add New User
           </h3>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2 text-gray-300">
+                <label htmlFor="name" className="block text-sm text-[#0f0d0b] mb-2">
                   Full Name
                 </label>
                 <input
                   id="name"
                   type="text"
                   {...register("name", { required: "Name is required" })}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 rounded-lg bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition-colors"
                   placeholder="Enter Name"
                 />
                 {errors.name && (
-                  <p className="mt-1 text-red-400 text-sm">{errors.name.message}</p>
+                  <p className="mt-1 text-red-500 text-sm">{errors.name.message}</p>
                 )}
               </div>
 
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-300">
+                <label htmlFor="email" className="block text-sm text-[#0f0d0b] mb-2">
                   Email Address
                 </label>
                 <input
@@ -150,17 +160,17 @@ const UserManagement = () => {
                       message: "Invalid email address",
                     },
                   })}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 rounded-lg bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition-colors"
                   placeholder="Enter Email"
                 />
                 {errors.email && (
-                  <p className="mt-1 text-red-400 text-sm">{errors.email.message}</p>
+                  <p className="mt-1 text-red-500 text-sm">{errors.email.message}</p>
                 )}
               </div>
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium mb-2 text-gray-300">
+                <label htmlFor="password" className="block text-sm text-[#0f0d0b] mb-2">
                   Password
                 </label>
                 <input
@@ -173,23 +183,23 @@ const UserManagement = () => {
                       message: "Password must be at least 6 characters",
                     },
                   })}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 rounded-lg bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition-colors"
                   placeholder="••••••••"
                 />
                 {errors.password && (
-                  <p className="mt-1 text-red-400 text-sm">{errors.password.message}</p>
+                  <p className="mt-1 text-red-500 text-sm">{errors.password.message}</p>
                 )}
               </div>
 
               {/* Role */}
               <div>
-                <label htmlFor="role" className="block text-sm font-medium mb-2 text-gray-300">
+                <label htmlFor="role" className="block text-sm text-[#0f0d0b] mb-2">
                   Role
                 </label>
                 <select
                   id="role"
                   {...register("role", { required: true })}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-white"
+                  className="w-full px-4 py-3 rounded-lg bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition-colors"
                 >
                   <option value="customer">Customer</option>
                   <option value="admin">Admin</option>
@@ -201,7 +211,7 @@ const UserManagement = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-yellow-500/20 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#0f0d0b] hover:bg-[#c9973f] text-white font-semibold py-3 px-4 rounded-xl transition-colors duration-300 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Adding..." : "+ Add User"}
             </button>
@@ -209,35 +219,40 @@ const UserManagement = () => {
         </div>
 
         {/* Existing Users Table */}
-        <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-700 p-8 rounded-2xl shadow-xl">
-          <h3 className="text-2xl font-semibold mb-6 text-white">Existing Users</h3>
-          <div className="overflow-x-auto rounded-lg">
+        <div className="bg-white border border-[#ebdccb]/60 p-8 rounded-2xl shadow-sm">
+          <h3
+            className="text-2xl font-light mb-6 text-[#0f0d0b]"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Existing Users
+          </h3>
+          <div className="overflow-x-auto rounded-lg border border-[#ebdccb]/40">
             {loading ? (
-              <div className="text-center py-12 text-yellow-400">Loading users...</div>
+              <div className="text-center py-12 text-[#8e8577]">Loading users...</div>
             ) : users && users.length > 0 ? (
-              <table className="min-w-full divide-y divide-gray-700">
-                <thead className="bg-gray-700">
+              <table className="min-w-full divide-y divide-[#ebdccb]/60">
+                <thead className="bg-[#fcfaf6]">
                   <tr>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Name</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Role</th>
-                    <th scope="col" className="px-6 py-4 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Name</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Email</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Role</th>
+                    <th scope="col" className="px-6 py-4 text-right text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-gray-800 divide-y divide-gray-700">
+                <tbody className="bg-white divide-y divide-[#ebdccb]/40">
                   {users.map((user) => (
-                    <tr key={user._id} className="hover:bg-gray-750 transition-colors">
+                    <tr key={user._id} className="hover:bg-[#fcfaf6] transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-white">{user.name}</div>
+                        <div className="text-sm font-medium text-[#0f0d0b]">{user.name}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-300">{user.email}</div>
+                        <div className="text-sm text-[#5c5548]">{user.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                          className="px-3 py-1 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                          className="px-3 py-1.5 rounded-lg bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] focus:outline-none hover:border-[#c9973f]/60 transition-colors text-sm"
                         >
                           <option value="customer">Customer</option>
                           <option value="admin">Admin</option>
@@ -246,7 +261,7 @@ const UserManagement = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
                           onClick={() => openDeleteModal(user)}
-                          className="text-red-400 hover:text-red-300 bg-red-900 bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded-md transition-colors"
+                          className="text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 px-4 py-1.5 rounded-lg transition-colors"
                         >
                           Delete
                         </button>
@@ -256,33 +271,38 @@ const UserManagement = () => {
                 </tbody>
               </table>
             ) : (
-              // Empty State
+              /* Empty State */
               <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">No users found. Add your first user above.</p>
+                <p className="text-[#8e8577] text-lg">No users found. Add your first user above.</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/*  Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 border border-gray-700 p-6 rounded-2xl shadow-2xl max-w-md w-full">
-            <h3 className="text-xl font-bold text-white mb-2">Confirm Deletion</h3>
-            <p className="text-gray-300 mb-6">
-              Are you sure you want to delete the user <span className="font-semibold text-yellow-400">"{userToDelete?.name}"</span>? This action cannot be undone.
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-[#ebdccb]/60 p-8 rounded-2xl shadow-lg max-w-md w-full">
+            <h3
+              className="text-2xl font-light text-[#0f0d0b] mb-3"
+              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            >
+              Confirm Deletion
+            </h3>
+            <p className="text-[#5c5548] mb-8">
+              Are you sure you want to delete the user <span className="font-semibold text-[#0f0d0b]">"{userToDelete?.name}"</span>? This action cannot be undone.
             </p>
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-end gap-4">
               <button
                 onClick={handleDeleteCancel}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
+                className="px-6 py-2.5 border border-[#ebdccb] text-[#5c5548] rounded-xl hover:border-[#c9973f]/60 hover:text-[#0f0d0b] transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteConfirm}
-                className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg transition-colors"
+                className="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors"
               >
                 Delete
               </button>

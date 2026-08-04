@@ -4,46 +4,54 @@ import { FaUser, FaBoxOpen, FaClipboard, FaShoppingBag } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import { clearCart } from "../../redux/slices/cartSlice";
-import { clearCartAsync } from "../../redux/slices/cartSlice";
+import { clearCart, clearCartAsync } from "../../redux/slices/cartSlice";
 
 const AdminSidebar = ({closeSidebar}) => {
-  const navigate = useNavigate()
-  const dispatch  = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
-    dispatch(logout())
-    dispatch(clearCart())
-    dispatch(clearCartAsync())
-    navigate("/")
-    closeSidebar()
-  }
+    dispatch(logout());
+    dispatch(clearCart());
+    dispatch(clearCartAsync());
+    navigate("/");
+    if (closeSidebar) closeSidebar();
+  };
+
   const handleAdmin = () => {
-    navigate("/admin")
-  }
+    navigate("/admin");
+    if (closeSidebar) closeSidebar();
+  };
+
   return (
-    <div className="p-6 bg-black min-h-screen text-gray-300">
+    <div className="p-6 bg-white min-h-screen text-[#0f0d0b] flex flex-col">
       {/* Logo */}
-      <div className="mb-8 text-start">
+      <div className="mb-10 mt-2 text-center md:text-left">
         <Link
-          className="font-Lora text-luxury font-bold opacity-90 text-xl tracking-wide"
+          className="font-semibold text-[#0f0d0b] text-2xl tracking-wide"
+          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           to="/"
         >
           CartFlow
         </Link>
-        <h2 onClick={handleAdmin} className="text-lg cursor-pointer font-semibold text-center text-yellow-300 mt-2">
-          Admin Dashboard
+        <h2
+          onClick={handleAdmin}
+          className="text-sm cursor-pointer font-medium text-[#8e8577] mt-1 uppercase tracking-widest hover:text-[#c9973f] transition-colors"
+        >
+          Admin
         </h2>
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col space-y-2">
-        <NavLink onClick={closeSidebar}
+      <nav className="flex flex-col space-y-2 flex-grow">
+        <NavLink
+          onClick={closeSidebar}
           to="/admin/users"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 ${
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
               isActive
-                ? "bg-yellow-300 text-black font-semibold"
-                : "text-gray-400 hover:text-yellow-300 hover:bg-gray-800"
+                ? "bg-[#fcfaf6] text-[#a87b32] font-semibold border border-[#ebdccb]/60 shadow-sm"
+                : "text-[#5c5548] hover:text-[#0f0d0b] hover:bg-[#fcfaf6] border border-transparent"
             }`
           }
         >
@@ -51,13 +59,14 @@ const AdminSidebar = ({closeSidebar}) => {
           <span>Users</span>
         </NavLink>
 
-        <NavLink onClick={closeSidebar}
+        <NavLink
+          onClick={closeSidebar}
           to="/admin/products"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 ${
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
               isActive
-                ? "bg-yellow-300 text-black font-semibold"
-                : "text-gray-400 hover:text-yellow-300 hover:bg-gray-800"
+                ? "bg-[#fcfaf6] text-[#a87b32] font-semibold border border-[#ebdccb]/60 shadow-sm"
+                : "text-[#5c5548] hover:text-[#0f0d0b] hover:bg-[#fcfaf6] border border-transparent"
             }`
           }
         >
@@ -65,13 +74,14 @@ const AdminSidebar = ({closeSidebar}) => {
           <span>Products</span>
         </NavLink>
 
-        <NavLink onClick={closeSidebar}
+        <NavLink
+          onClick={closeSidebar}
           to="/admin/orders"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 ${
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
               isActive
-                ? "bg-yellow-300 text-black font-semibold"
-                : "text-gray-400 hover:text-yellow-300 hover:bg-gray-800"
+                ? "bg-[#fcfaf6] text-[#a87b32] font-semibold border border-[#ebdccb]/60 shadow-sm"
+                : "text-[#5c5548] hover:text-[#0f0d0b] hover:bg-[#fcfaf6] border border-transparent"
             }`
           }
         >
@@ -79,13 +89,14 @@ const AdminSidebar = ({closeSidebar}) => {
           <span>Orders</span>
         </NavLink>
 
-        <NavLink onClick={closeSidebar}
+        <NavLink
+          onClick={closeSidebar}
           to="/"
           className={({ isActive }) =>
-            `flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 ${
+            `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
               isActive
-                ? "bg-yellow-300 text-black font-semibold"
-                : "text-gray-400 hover:text-yellow-300 hover:bg-gray-800"
+                ? "bg-[#fcfaf6] text-[#a87b32] font-semibold border border-[#ebdccb]/60 shadow-sm"
+                : "text-[#5c5548] hover:text-[#0f0d0b] hover:bg-[#fcfaf6] border border-transparent"
             }`
           }
         >
@@ -95,8 +106,11 @@ const AdminSidebar = ({closeSidebar}) => {
       </nav>
 
       {/* Logout Button */}
-      <div className="mt-8">
-        <button onClick={handleLogout} className="w-full px-3 py-2 rounded-md bg-red-500 hover:bg-red-600 flex items-center justify-center text-white gap-2 transition-colors duration-300">
+      <div className="mt-auto mb-4">
+        <button
+          onClick={handleLogout}
+          className="w-full px-4 py-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-100 flex items-center justify-center text-red-500 font-medium gap-2 transition-colors duration-300"
+        >
           <FiLogOut />
           <span>Logout</span>
         </button>
