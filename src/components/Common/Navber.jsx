@@ -1,4 +1,4 @@
-import  {  useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import CartDrawer from "../Layout/CartDrawer";
@@ -6,20 +6,16 @@ import { MdClose } from "react-icons/md";
 import { AlignRight } from "lucide-react";
 import { BsCart4 } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
-import {  useSelector } from "react-redux";
-
+import { useSelector } from "react-redux";
 
 const Navber = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const location = useLocation();
-  const {cart} = useSelector((state)=> state.cart)
-  const {user , guestId} = useSelector((state)=> state.auth)
+  const { cart } = useSelector((state) => state.cart);
+  const { user, guestId } = useSelector((state) => state.auth);
   const handleNavToggle = () => setIsNavOpen((prev) => !prev);
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
- 
-
-
 
   // Single source of truth for links
   const Links = [
@@ -36,10 +32,17 @@ const Navber = () => {
   return (
     <>
       {/* Top Navbar */}
-      <nav className="w-full mx-auto flex justify-between items-center border-b bg-gradient-to-r from-black via-gray-900 to-black text-yellow-400 border-gray-600 px-4 sm:px-6 py-3">
+      <nav
+        className="w-full mx-auto flex justify-between items-center border-b border-[#e1dacd] px-4 sm:px-6 py-3"
+        style={{
+          background:
+            "radial-gradient(circle at 15% 50%, #f8f6f2, #ece7de 25%, #e2dbcd 50%, #f8f6f2 75%)",
+          backgroundSize: "200% auto",
+        }}
+      >
         {/* Left Logo */}
         <Link
-          className="font-Lora font-bold opacity-85 text-lg sm:text-xl tracking-wide"
+          className="font-Lora font-bold opacity-90 text-lg sm:text-xl tracking-wide text-[#0f0d0b]"
           to="/"
         >
           CartFlow
@@ -71,14 +74,14 @@ const Navber = () => {
                   const isLinkActive = active || isActive;
                   return `relative group text-sm lg:text-[15px] font-semibold transition-all duration-300 ease-in-out ${
                     isLinkActive
-                      ? "text-yellow-500"
-                      : "text-yellow-300 hover:text-yellow-300"
+                      ? "text-[#c9973f]"
+                      : "text-[#5c5548] hover:text-[#c9973f]"
                   }`;
                 }}
               >
                 {link.name}
                 <span
-                  className={`absolute h-[2px] left-0 bottom-[-4px] bg-[#D4AF37] transition-all duration-500 ease-in-out ${
+                  className={`absolute h-[2px] left-0 bottom-[-4px] bg-[#c9973f] transition-all duration-500 ease-in-out ${
                     active ? "w-full" : "w-0 group-hover:w-full"
                   }`}
                 ></span>
@@ -87,13 +90,15 @@ const Navber = () => {
           })}
 
           {/* Admin button (different style, only large screens) */}
-          <NavLink
-            to="/admin"
-            className="hidden lg:inline-block px-5 py-1.5 text-sm rounded-full border border-[#eacd89] text-[#eacd89] 
-              hover:bg-[#eacd89] hover:text-black transition-all duration-300 font-semibold shadow-md"
-          >
-            Admin
-          </NavLink>
+          {user?.role === "admin" && (
+            <NavLink
+              to="/admin"
+              className="hidden lg:inline-block px-5 py-1.5 text-sm rounded-full border border-[#c9973f] text-[#a87b32]
+        hover:bg-[#c9973f] hover:text-white transition-all duration-300 font-semibold shadow-sm"
+            >
+              Admin
+            </NavLink>
+          )}
         </div>
 
         {/* Right Icons */}
@@ -104,14 +109,14 @@ const Navber = () => {
           </div>
 
           {/* Profile/Login Link */}
-          {user ? (
+          {user?.role ? (
             <NavLink
               to="/profile"
               className={({ isActive }) =>
                 `relative group p-1 sm:p-2 rounded-full transition-all duration-300 ${
                   isActive
-                    ? "bg-[#eacd89]/20 text-[#eacd89]"
-                    : "hover:bg-gray-200/20 text-gray-300 hover:text-[#eacd89]"
+                    ? "bg-[#c9973f]/15 text-[#a87b32]"
+                    : "hover:bg-[#e1dacd]/60 text-[#5c5548] hover:text-[#a87b32]"
                 }`
               }
               aria-label="Profile"
@@ -125,7 +130,7 @@ const Navber = () => {
               ) : (
                 <FaUser className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
               )}
-              <span className="hidden sm:block absolute left-1/2 -bottom-3 -translate-x-1/2 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+              <span className="hidden sm:block absolute left-1/2 -bottom-3 -translate-x-1/2 text-xs text-[#5c5548] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
                 Profile
               </span>
             </NavLink>
@@ -135,14 +140,14 @@ const Navber = () => {
               className={({ isActive }) =>
                 `relative group p-1 sm:p-2 rounded-full transition-all duration-300 ${
                   isActive
-                    ? "bg-[#eacd89]/20 text-[#eacd89]"
-                    : "hover:bg-gray-200/20 text-gray-300 hover:text-[#eacd89]"
+                    ? "bg-[#c9973f]/15 text-[#a87b32]"
+                    : "hover:bg-[#e1dacd]/60 text-[#5c5548] hover:text-[#a87b32]"
                 }`
               }
               aria-label="Login"
             >
               <FaUser className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
-              <span className="hidden sm:block absolute left-1/2 -bottom-3 -translate-x-1/2 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+              <span className="hidden sm:block absolute left-1/2 -bottom-3 -translate-x-1/2 text-xs text-[#5c5548] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
                 Login
               </span>
             </NavLink>
@@ -152,13 +157,13 @@ const Navber = () => {
           <button
             onClick={toggleDrawer}
             aria-label="Open cart"
-            className="relative group p-1 sm:p-2 rounded-full hover:bg-gray-200/20 transition-colors duration-300 text-gray-300 hover:text-[#eacd89]"
+            className="relative group p-1 sm:p-2 rounded-full hover:bg-[#e1dacd]/60 transition-colors duration-300 text-[#5c5548] hover:text-[#a87b32]"
           >
             <BsCart4 className="h-5 w-5 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
             <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-red-500 text-white text-[10px] sm:text-xs shadow-md">
               {cart?.products?.length || 0}
             </span>
-            <span className="hidden sm:block absolute left-1/2 -bottom-3 -translate-x-1/2 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+            <span className="hidden sm:block absolute left-1/2 -bottom-3 -translate-x-1/2 text-xs text-[#5c5548] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
               Cart
             </span>
           </button>
@@ -172,7 +177,7 @@ const Navber = () => {
           <button
             onClick={handleNavToggle}
             aria-label="Toggle Menu"
-            className="md:hidden block p-1 sm:p-2 rounded-full hover:bg-gray-200/20 transition-colors duration-300 text-gray-300 hover:text-[#eacd89]"
+            className="md:hidden block p-1 sm:p-2 rounded-full hover:bg-[#e1dacd]/60 transition-colors duration-300 text-[#5c5548] hover:text-[#a87b32]"
           >
             <AlignRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -185,32 +190,32 @@ const Navber = () => {
       {/* Mobile Navigation Overlay */}
       {isNavOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="md:hidden fixed inset-0 bg-black bg-opacity-30 z-40"
           onClick={() => setIsNavOpen(false)}
         ></div>
       )}
 
       {/* Mobile Navigation */}
       <div
-        className={`md:hidden fixed top-0 left-0 w-3/4 max-w-xs h-screen bg-[#1a1714] shadow-2xl transition-transform duration-300 ease-in-out z-50 ${
+        className={`md:hidden fixed top-0 left-0 w-3/4 max-w-xs h-screen bg-[#fcfaf6] shadow-2xl transition-transform duration-300 ease-in-out z-50 ${
           isNavOpen
-            ? "translate-x-0 border-r-2 border-[#eacd89]"
+            ? "translate-x-0 border-r-2 border-[#c9973f]"
             : "-translate-x-full"
         }`}
       >
         {/* Mobile Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#eacd89]/40">
-          <h2 className="text-lg font-bold text-[#eacd89] tracking-wide">
+        <div className="flex items-center justify-between p-4 border-b border-[#e1dacd]">
+          <h2 className="text-lg font-bold text-[#a87b32] tracking-wide">
             CartFlow
           </h2>
           <button
             onClick={handleNavToggle}
             aria-label="Close Menu"
-            className="text-gray-400 hover:text-[#eacd89] transition"
+            className="text-[#8e8577] hover:text-[#a87b32] transition"
           >
             <MdClose
-              className="w-6 h-6 sm:w-7 sm:h-7 border-2 border-[#eacd89] rounded-full text-[#eacd89] cursor-pointer 
-               transition-all duration-300 hover:bg-[#eacd89]  hover:text-black hover:rotate-90 p-1 shadow-md"
+              className="w-6 h-6 sm:w-7 sm:h-7 border-2 border-[#c9973f] rounded-full text-[#a87b32] cursor-pointer
+               transition-all duration-300 hover:bg-[#c9973f] hover:text-white hover:rotate-90 p-1 shadow-sm"
             />
           </button>
         </div>
@@ -238,8 +243,8 @@ const Navber = () => {
                   }
                   return `block text-[15px] font-medium transition-all duration-300 ease-in-out rounded-lg px-3 py-2 ${
                     active
-                      ? "text-black bg-[#eacd89]"
-                      : "text-gray-300 hover:text-[#eacd89] hover:bg-gray-800"
+                      ? "text-white bg-[#c9973f]"
+                      : "text-[#5c5548] hover:text-[#a87b32] hover:bg-[#f0ece2]"
                   }`;
                 }}
               >

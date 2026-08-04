@@ -11,18 +11,7 @@ const initialGuestId =
   localStorage.getItem("guestId") || `guest_${new Date().getTime()}`;
 localStorage.setItem("guestId", initialGuestId);
 
-const initialState = {
-  user: userFromLocalStorage,
-  guestId: initialGuestId,
-  loading: false,
-  error: null,
-  success: null,
-  contactSuccess: false,
-  profileLoading: false,
-  updateProfileLoading: false,
-  updateProfileError: null,
-  updateProfileSuccess: false,
-};
+
 
 // async thunk for user login
 export const loginUser = createAsyncThunk(
@@ -237,7 +226,38 @@ export const updateProfile = createAsyncThunk(
     }
   }
 );
+export const googleAuth = createAsyncThunk(
+  "auth/googleAuth",
+  async ({ idToken }, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/google`,
+        { idToken },
+        { withCredentials: true }
+      );
 
+      localStorage.setItem("userInfo", JSON.stringify(res.data.user));
+      localStorage.setItem("userToken", res.data.token);
+
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Google login failed" });
+    }
+  }
+);
+// initial state
+const initialState = {
+  user: userFromLocalStorage,
+  guestId: initialGuestId,
+  loading: false,
+  error: null,
+  success: null,
+  contactSuccess: false,
+  profileLoading: false,
+  updateProfileLoading: false,
+  updateProfileError: null,
+  updateProfileSuccess: false,
+};
 // create slice
 const authSlice = createSlice({
   name: "auth",
@@ -275,6 +295,20 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Login failed";
+      })
+      // googleAuth
+      .addCase(googleAuth.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleAuth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.error = null;
+      })
+      .addCase(googleAuth.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Google login failed";
       })
 
       // register

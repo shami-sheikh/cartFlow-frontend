@@ -5,8 +5,8 @@
 
 /* Active dot = line */
 .slick-dots li.slick-active div {
-  background-color: #facc15; 
-  height: 6px;            
+  background-color: #facc15;
+  height: 6px;
 }
 
 
@@ -16,14 +16,23 @@
   font-optical-sizing: auto;
   font-style: normal;
 }
-html, body {
-  overflow-x: hidden;
-  width: 100%;
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  background: radial-gradient(circle at 15% 50%, #f8f6f2, #ece7de 25%, #e2dbcd 50%, #f8f6f2 75%);
+  background-size: 200% auto;
+  background-attachment: fixed;
+  color: #111827;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 ::-webkit-scrollbar{
   display: none;
-} 
+}
 
 @media(max-width:1022px){
   a.active{

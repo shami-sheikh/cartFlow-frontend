@@ -60,7 +60,7 @@ const OrderConfirmationPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#18130F] to-[#2a2520] text-gray-100 px-4 py-8">
+    <div className="min-h-screen bg-[#fcfaf6] text-[#0f0d0b] px-4 py-12">
       {/* Print-specific styles */}
       <style>{`
         @media print {
@@ -97,34 +97,41 @@ const OrderConfirmationPage = () => {
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 no-print">
+        <div className="text-center mb-10 no-print">
           <Link
             to="/"
-            className="inline-block text-2xl font-bold bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] bg-clip-text text-transparent mb-4"
+            className="inline-block text-3xl font-semibold text-[#0f0d0b] mb-6 tracking-wide"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           >
             CartFlow
           </Link>
           <div className="flex justify-center mb-6">
-            <div className="bg-green-500/20 p-4 rounded-full">
-              <CheckCircle className="w-16 h-16 text-green-500" />
+            <div className="bg-emerald-50 p-4 rounded-full border border-emerald-100 shadow-sm">
+              <CheckCircle className="w-16 h-16 text-emerald-600" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1
+            className="text-4xl font-light text-[#0f0d0b] mb-3"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
             Order Confirmed!
           </h1>
-          <p className="text-gray-400">
+          <p className="text-[#8e8577]">
             Thank you for your purchase. Your order has been confirmed.
           </p>
-          <p className="text-[#C6A15B] font-semibold mt-2">
+          <p className="text-[#a87b32] font-semibold mt-2">
             Order ID: {orderData.orderId}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 print-area">
           {/* Left Column - Order Summary */}
-          <div className="bg-[#1F1A16] p-6 rounded-2xl shadow-lg">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <ShoppingBag className="text-[#C6A15B] no-print" />
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-[#ebdccb]/60">
+            <h2
+              className="text-2xl font-light mb-6 flex items-center gap-2 text-[#0f0d0b]"
+              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            >
+              <ShoppingBag className="text-[#a87b32] no-print" size={24} />
               Order Summary
             </h2>
 
@@ -132,43 +139,43 @@ const OrderConfirmationPage = () => {
               {orderData.items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 p-3 bg-[#29221C] rounded-lg"
+                  className="flex items-center gap-4 p-3 bg-[#fcfaf6] border border-[#ebdccb]/40 rounded-xl"
                 >
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-16 h-16 object-cover rounded"
+                    className="w-16 h-16 object-cover rounded-lg bg-[#f0ece2] border border-[#ebdccb]"
                   />
                   <div className="flex-1">
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-400 no-print">
+                    <p className="font-medium text-[#0f0d0b]">{item.name}</p>
+                    <p className="text-sm text-[#8e8577] no-print">
                       Size: {item.size} | Color: {item.color}
                     </p>
-                    <p className="text-sm">Qty: {item.qty}</p>
+                    <p className="text-sm text-[#5c5548]">Qty: {item.qty}</p>
                   </div>
-                  <span className="font-semibold">
-                    ₹{item.price * item.qty}
+                  <span className="font-semibold text-[#a87b32]">
+                    ₹{(item.price * item.qty).toFixed(2)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="space-y-2 border-t border-[#3D342D] pt-4">
+            <div className="space-y-3 border-t border-[#ebdccb]/60 pt-5 text-[#0f0d0b]">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>₹{orderData.total.toFixed(2)}</span>
+                <span className="text-[#5c5548]">₹{orderData.total.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>₹{orderData.shipping}</span>
+                <span className="text-[#5c5548]">₹{orderData.shipping}</span>
               </div>
-              <div className="flex justify-between text-green-400 no-print">
+              <div className="flex justify-between text-emerald-600 no-print">
                 <span>Discount</span>
-                <span>-₹{orderData.discount}</span>
+                <span>-₹{orderData.discount.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg pt-2 border-t border-[#3D342D]">
+              <div className="flex justify-between font-bold text-lg pt-4 mt-2 border-t border-[#ebdccb]/60 text-[#0f0d0b]">
                 <span>Total</span>
-                <span className="text-[#C6A15B] no-print">
+                <span className="text-[#a87b32] no-print">
                   ₹{orderData.grandTotal.toFixed(2)}
                 </span>
                 <span className="print-only">
@@ -177,76 +184,86 @@ const OrderConfirmationPage = () => {
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-[#29221C] rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Truck className="text-[#C6A15B] no-print" />
+            <div className="mt-8 p-5 bg-[#fcfaf6] border border-[#ebdccb]/40 rounded-xl">
+              <div className="flex items-center gap-2 mb-2 text-[#0f0d0b]">
+                <Truck className="text-[#a87b32] no-print" size={20} />
                 <span className="font-semibold">Estimated Delivery</span>
               </div>
-              <p>{orderData.estimatedDelivery}</p>
+              <p className="text-[#5c5548]">{orderData.estimatedDelivery}</p>
             </div>
           </div>
 
           {/* Right Column - Customer & Payment Info */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* Customer Information */}
-            <div className="bg-[#1F1A16] p-6 rounded-2xl shadow-lg">
-              <h2 className="text-xl font-bold mb-4">Customer Information</h2>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-[#C6A15B] no-print">👤</span>
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-[#ebdccb]/60">
+              <h2
+                className="text-2xl font-light mb-6 text-[#0f0d0b]"
+                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
+                Customer Information
+              </h2>
+              <div className="space-y-4 text-[#0f0d0b]">
+                <div className="flex items-center gap-4">
+                  <span className="font-bold text-[#a87b32] no-print">👤</span>
                   <div>
-                    <p className="text-sm text-gray-400 no-print">Name</p>
+                    <p className="text-xs font-medium text-[#8e8577] uppercase tracking-wider no-print mb-0.5">Name</p>
                     <p>{orderData.customer.name}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-[#C6A15B] no-print" />
+                <div className="flex items-center gap-4">
+                  <Mail className="w-5 h-5 text-[#a87b32] no-print" />
                   <div>
-                    <p className="text-sm text-gray-400 no-print">Email</p>
+                    <p className="text-xs font-medium text-[#8e8577] uppercase tracking-wider no-print mb-0.5">Email</p>
                     <p>{orderData.customer.email}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-[#C6A15B] no-print" />
+                <div className="flex items-center gap-4">
+                  <Phone className="w-5 h-5 text-[#a87b32] no-print" />
                   <div>
-                    <p className="text-sm text-gray-400 no-print">Phone</p>
+                    <p className="text-xs font-medium text-[#8e8577] uppercase tracking-wider no-print mb-0.5">Phone</p>
                     <p>{orderData.customer.phone}</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-[#C6A15B] no-print" />
+                <div className="flex items-start gap-4">
+                  <MapPin className="w-5 h-5 text-[#a87b32] no-print mt-1" />
                   <div>
-                    <p className="text-sm text-gray-400 no-print">
+                    <p className="text-xs font-medium text-[#8e8577] uppercase tracking-wider no-print mb-0.5">
                       Shipping Address
                     </p>
-                    <p>{orderData.customer.address}</p>
+                    <p className="leading-relaxed">{orderData.customer.address}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Payment Information */}
-            <div className="bg-[#1F1A16] p-6 rounded-2xl shadow-lg">
-              <h2 className="text-xl font-bold mb-4">Payment Information</h2>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-400 no-print">Method</span>
-                  <span>{orderData.paymentMethod}</span>
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-[#ebdccb]/60">
+              <h2
+                className="text-2xl font-light mb-6 text-[#0f0d0b]"
+                style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              >
+                Payment Information
+              </h2>
+              <div className="space-y-3 text-[#0f0d0b]">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#8e8577] no-print">Method</span>
+                  <span className="font-medium capitalize">{orderData.paymentMethod}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400 no-print">Payment ID</span>
-                  <span className="text-sm">{orderData.paymentId}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#8e8577] no-print">Payment ID</span>
+                  <span className="text-sm font-medium">{orderData.paymentId}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400 no-print">Status</span>
-                  <span className="text-green-500 font-semibold no-print">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#8e8577] no-print">Status</span>
+                  <span className="text-emerald-600 font-semibold no-print">
                     Paid
                   </span>
                   <span className="print-only">Paid</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400 no-print">Date</span>
-                  <span>{orderData.orderDate}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#8e8577] no-print">Date</span>
+                  <span className="font-medium">{orderData.orderDate}</span>
                 </div>
               </div>
             </div>
@@ -254,23 +271,23 @@ const OrderConfirmationPage = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center no-print">
+        <div className="flex flex-col sm:flex-row gap-4 mt-12 justify-center no-print">
           <Link
             to="/"
-            className="px-6 py-3 bg-[#C6A15B] text-black font-semibold rounded-lg hover:bg-[#d4b16c] transition-colors text-center"
+            className="px-8 py-3 bg-[#0f0d0b] text-white font-semibold rounded-xl hover:bg-[#c9973f] transition-colors text-center"
           >
             Continue Shopping
           </Link>
           <Link
             to="/profile"
             state={{ tab: "orders" }}
-            className="px-6 py-3 border border-[#C6A15B] text-[#C6A15B] font-semibold rounded-lg hover:bg-[#C6A15B] hover:text-black transition-colors text-center"
+            className="px-8 py-3 border border-[#c9973f] text-[#a87b32] font-semibold rounded-xl hover:bg-[#c9973f] hover:text-white transition-colors text-center"
           >
             View Order History
           </Link>
           <button
             onClick={() => window.print()}
-            className="px-6 py-3 border border-gray-600 text-gray-300 font-semibold rounded-lg hover:bg-gray-700 transition-colors"
+            className="px-8 py-3 border border-[#ebdccb] text-[#5c5548] font-semibold rounded-xl hover:border-[#c9973f]/60 hover:text-[#0f0d0b] transition-colors"
           >
             Print Receipt
           </button>

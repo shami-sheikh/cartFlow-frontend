@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 import CartContent from "../Cart/CartContent";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { X, ShoppingBag } from "lucide-react";
+import emtpycart from "../../assets/emtycart.png";
 
 const CartDrawer = ({ drawerOpen, toggleDrawer }) => {
   const drawerRef = useRef(null);
@@ -11,17 +13,20 @@ const CartDrawer = ({ drawerOpen, toggleDrawer }) => {
   const userId = user ? user._id : null;
 
   const handleCheckout = () => {
-  toggleDrawer(false);
-  if (!user) {
-    navigate("/login?redirect=/checkout");
-  } else {
-    navigate("/checkout");
-  }
-};
-
+    toggleDrawer(false);
+    if (!user) {
+      navigate("/login?redirect=/checkout");
+    } else {
+      navigate("/checkout");
+    }
+  };
 
   const handleClickOutside = (event) => {
-    if (drawerOpen && drawerRef.current && !drawerRef.current.contains(event.target)) {
+    if (
+      drawerOpen &&
+      drawerRef.current &&
+      !drawerRef.current.contains(event.target)
+    ) {
       toggleDrawer();
     }
   };
@@ -36,34 +41,36 @@ const CartDrawer = ({ drawerOpen, toggleDrawer }) => {
       {/* Mobile Overlay */}
       {drawerOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="md:hidden fixed inset-0 bg-black bg-opacity-30 z-40"
           onClick={toggleDrawer}
         ></div>
       )}
 
       <div
         ref={drawerRef}
-        className={`fixed top-0 right-0 h-full w-3/4 sm:w-96 md:w-1/3 
-        bg-gradient-to-b from-[#29221C] to-[#0D0D0D] 
-        shadow-2xl transition-transform ease-in-out duration-300 
-        flex flex-col  ${
+        className={`fixed top-0 right-0 h-full w-3/4 sm:w-96 md:w-1/3
+        bg-[#fcfaf6]
+        shadow-2xl transition-transform ease-in-out duration-300
+        flex flex-col ${
           drawerOpen
-            ? "translate-x-0 border-2 border-[#eacd89]/30 md:mr-0  z-50"
+            ? "translate-x-0 border-l border-[#ebdccb] md:mr-0 z-50"
             : "translate-x-full mr-0"
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#eacd89]/30">
-          <h2 className="text-lg text-[#eacd89] font-semibold tracking-wide">Cart Items</h2>
+        <div className="flex items-center justify-between p-4 border-b border-[#ebdccb]/60 bg-white">
+          <h2
+            className="text-lg text-[#0f0d0b] font-semibold tracking-wide"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Cart Items
+          </h2>
           <button
             onClick={toggleDrawer}
-            className="text-[#eacd89] hover:text-white transition"
+            aria-label="Close cart"
+            className="text-[#8e8577] hover:text-[#0f0d0b] hover:bg-[#f0ece2] p-1.5 rounded-full transition"
           >
-            <img
-              src="https://cdn-icons-png.flaticon.com/128/1828/1828778.png"
-              alt="close"
-              className="w-5 h-5 invert"
-            />
+            <X size={18} />
           </button>
         </div>
 
@@ -74,26 +81,44 @@ const CartDrawer = ({ drawerOpen, toggleDrawer }) => {
               cart={cart}
               guestId={guestId}
               userId={userId}
-              onClose={() => toggleDrawer(false)} // close drawer on click
+              onClose={() => toggleDrawer(false)}
             />
           ) : (
-            <p className="text-[#eacd89] text-sm text-center py-36">Your cart is empty 🛒</p>
+            <div className="flex flex-col items-center justify-center h-full text-center px-6">
+              <img
+                src={emtpycart}
+                className="w-40 h-40 object-contain opacity-90 mb-4"
+                alt="Empty cart"
+              />
+              <p className="text-[#0f0d0b] text-base font-semibold">
+                Your cart is empty
+              </p>
+              <p className="text-sm text-[#8e8577] mt-1 mb-5">
+                Looks like you haven't added anything yet.
+              </p>
+              <button
+                onClick={() => toggleDrawer(false)}
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#a87b32] border-b border-[#a87b32] pb-0.5 hover:text-[#0f0d0b] hover:border-[#0f0d0b] transition"
+              >
+                <ShoppingBag size={14} /> Continue Shopping
+              </button>
+            </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t w-full border-[#eacd89]/30 bg-[#1a1410]">
+        <div className="p-4 border-t w-full border-[#ebdccb]/60 bg-white">
           {cart?.products?.length > 0 && (
             <>
               <button
                 onClick={handleCheckout}
-                className="w-full bg-gradient-to-r from-[#eacd89] to-[#d4af37] 
-                hover:from-[#d4af37] hover:to-[#eacd89] transition-all 
-                duration-300 text-black font-semibold py-2 rounded-full shadow-lg"
+                className="w-full bg-[#0f0d0b]
+                hover:bg-[#c9973f] transition-all
+                duration-300 text-white font-semibold py-3 rounded-full shadow-md"
               >
                 Checkout
               </button>
-              <p className="text-xs text-[#eacd89] mt-2 text-center">
+              <p className="text-xs text-[#aba293] mt-2 text-center">
                 🔒 Your payment is 100% secure with SSL encryption.
               </p>
             </>

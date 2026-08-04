@@ -16,9 +16,9 @@ const COLOR_HEX_MAP = {
   Gray: "#8C8C8C",
   Burgundy: "#800020",
   "Light Blue": "#ADD8E6",
-  "Dark Wash": "#223A5E",      
-  "Tropical Print": "#2EC4B6", 
-  "Navy Palms": "#254E70",     
+  "Dark Wash": "#223A5E",
+  "Tropical Print": "#2EC4B6",
+  "Navy Palms": "#254E70",
   Olive: "#808000",
   Charcoal: "#36454F",
   "Dark Green": "#013220",
@@ -27,22 +27,18 @@ const COLOR_HEX_MAP = {
   Khaki: "#F0E68C",
 };
 
-
 const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
   const { register, watch, setValue, reset } = useForm({
     defaultValues: filters,
   });
-  // Local state for price range
   const [price, setPrice] = React.useState(filters.maxPrice || 1000);
 
-  // Reset form when filters prop changes (from URL or parent)
   useEffect(() => {
     reset(filters);
     setPrice(filters.maxPrice || 1000);
   }, [filters, reset]);
 
   const categories = ["Top Wear", "Bottom Wear"];
-  // Dynamically extract unique colors from products
   const colors = useMemo(() => {
     const colorSet = new Set();
     products.forEach((p) => {
@@ -50,15 +46,13 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
         p.colors.forEach((c) => colorSet.add(c));
       }
     });
-    // Return as array of { name, hex }
     return Array.from(colorSet).map((name) => ({
       name,
-      hex: COLOR_HEX_MAP[name] || "#CCCCCC", // fallback gray
+      hex: COLOR_HEX_MAP[name] || "#CCCCCC",
     }));
   }, [products]);
   const sizes = ["S", "M", "L", "XL", "XXL"];
   const materials = ["Cotton", "Polyester", "Denim", "Viscose", "Fleece"];
-  // Only show top 5 brands
   const brands = ["Nike", "Zara", "Levi's", "Adidas", "Reebok"];
   const genders = ["Men", "Women"];
 
@@ -68,7 +62,6 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
     maxPrice: price,
   };
 
-  // Call parent only when filter actually changes
   useEffect(() => {
     onFilterChange(filter);
   }, [filter, onFilterChange]);
@@ -82,17 +75,24 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
     }
   };
 
+  const pricePct = Math.min(100, (price / 1000) * 100);
+
   return (
-    <div className="p-5 space-y-6 bg-[#1c1917] text-[#f7e7b7] rounded-2xl shadow-lg w-full">
-      <h2 className="text-2xl font-bold text-yellow-400 mb-4">Filters</h2>
+    <div className="p-5 space-y-6 bg-white border border-[#ebdccb]/60 text-[#0f0d0b] rounded-2xl shadow-sm w-full">
+      <h2
+        className="text-2xl font-light text-[#0f0d0b] mb-4"
+        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+      >
+        Filters
+      </h2>
 
       {/* Category */}
       <div>
-        <label className="font-semibold text-[#eacd89]">Category</label>
-        <div className="mt-2 flex flex-col gap-1">
+        <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Category</label>
+        <div className="mt-2 flex flex-col gap-1.5">
           {categories.map((cat) => (
-            <label key={cat} className="flex items-center gap-2 cursor-pointer">
-              <input type="radio" value={cat} {...register("category")} className="w-4 h-4 text-yellow-400" />
+            <label key={cat} className="flex items-center gap-2 cursor-pointer text-sm text-[#0f0d0b]">
+              <input type="radio" value={cat} {...register("category")} className="w-4 h-4 accent-[#c9973f]" />
               {cat}
             </label>
           ))}
@@ -101,11 +101,11 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
 
       {/* Gender */}
       <div>
-        <label className="font-semibold text-[#eacd89]">Gender</label>
-        <div className="mt-2 flex flex-col gap-1">
+        <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Gender</label>
+        <div className="mt-2 flex flex-col gap-1.5">
           {genders.map((g) => (
-            <label key={g} className="flex items-center gap-2 cursor-pointer">
-              <input type="radio" value={g} {...register("gender")} className="w-4 h-4 text-yellow-400" />
+            <label key={g} className="flex items-center gap-2 cursor-pointer text-sm text-[#0f0d0b]">
+              <input type="radio" value={g} {...register("gender")} className="w-4 h-4 accent-[#c9973f]" />
               {g}
             </label>
           ))}
@@ -113,32 +113,35 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
       </div>
 
       {/* Color */}
-      <div className="mt-2 flex flex-wrap gap-2">
-        {colors.length === 0 ? (
-          <span className="text-gray-400 text-sm">No colors found</span>
-        ) : (
-          colors.map((c) => (
-            <button
-              type="button"
-              key={c.name}
-              onClick={() => toggleArrayValue("color", c.name)}
-              className={`w-7 h-7 rounded-full transform transition-transform duration-300 hover:scale-110 ${
-                (filter.color || []).includes(c.name) && "ring-2 ring-[#eacd89]"
-              }`}
-              style={{ backgroundColor: c.hex }}
-              title={c.name}
-            />
-          ))
-        )}
+      <div>
+        <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Color</label>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {colors.length === 0 ? (
+            <span className="text-[#aba293] text-sm">No colors found</span>
+          ) : (
+            colors.map((c) => (
+              <button
+                type="button"
+                key={c.name}
+                onClick={() => toggleArrayValue("color", c.name)}
+                className={`w-7 h-7 rounded-full border border-black/10 transform transition-transform duration-300 hover:scale-110 ${
+                  (filter.color || []).includes(c.name) && "ring-2 ring-offset-2 ring-offset-white ring-[#c9973f]"
+                }`}
+                style={{ backgroundColor: c.hex }}
+                title={c.name}
+              />
+            ))
+          )}
+        </div>
       </div>
 
       {/* Sizes */}
       <div>
-        <label className="font-bold text-[#eacd89]">Sizes</label>
-        <div className="mt-2 flex flex-col gap-2">
+        <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Sizes</label>
+        <div className="mt-2 flex flex-col gap-1">
           {sizes.map((s) => (
-            <label key={s} className="flex items-center gap-1 cursor-pointer p-1 rounded-lg hover:bg-yellow-400 hover:text-black transition-colors duration-300">
-              <input type="checkbox" value={s} {...register("size")} className="w-4 h-4 text-yellow-400" />
+            <label key={s} className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg text-sm text-[#0f0d0b] hover:bg-[#c9973f] hover:text-white transition-colors duration-300">
+              <input type="checkbox" value={s} {...register("size")} className="w-4 h-4 accent-[#c9973f]" />
               {s}
             </label>
           ))}
@@ -147,11 +150,11 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
 
       {/* Brands */}
       <div>
-        <label className="font-bold text-[#eacd89]">Brands</label>
-        <div className="mt-2 flex flex-col flex-wrap gap-2">
+        <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Brands</label>
+        <div className="mt-2 flex flex-col flex-wrap gap-1">
           {brands.map((b) => (
-            <label key={b} className="flex items-center text-nowrap gap-1 cursor-pointer p-1 rounded-lg hover:bg-yellow-400 hover:text-black transition-colors duration-300">
-              <input type="checkbox" value={b} {...register("brand")} className="w-4 h-4 text-yellow-400" />
+            <label key={b} className="flex items-center text-nowrap gap-2 cursor-pointer p-1.5 rounded-lg text-sm text-[#0f0d0b] hover:bg-[#c9973f] hover:text-white transition-colors duration-300">
+              <input type="checkbox" value={b} {...register("brand")} className="w-4 h-4 accent-[#c9973f]" />
               {b}
             </label>
           ))}
@@ -160,11 +163,11 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
 
       {/* Material */}
       <div>
-        <label className="font-bold text-[#eacd89]">Material</label>
-        <div className="mt-2 flex flex-wrap gap-2">
+        <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Material</label>
+        <div className="mt-2 flex flex-col gap-1">
           {materials.map((m) => (
-            <label key={m} className="flex items-center gap-1 cursor-pointer p-1 rounded-lg hover:bg-yellow-400 hover:text-black transition-colors duration-300">
-              <input type="checkbox" value={m} {...register("material")} className="w-4 h-4 text-yellow-400" />
+            <label key={m} className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg text-sm text-[#0f0d0b] hover:bg-[#c9973f] hover:text-white transition-colors duration-300">
+              <input type="checkbox" value={m} {...register("material")} className="w-4 h-4 accent-[#c9973f]" />
               {m}
             </label>
           ))}
@@ -173,16 +176,76 @@ const FilterSidebar = ({ onFilterChange, filters, products = [] }) => {
 
       {/* Price */}
       <div>
-        <label className="font-semibold text-[#eacd89] mb-2 block">Price: Up to ₹{price}</label>
-        <input
-          type="range"
-          min={0}
-          max={1000}
-          value={price}
-          onChange={e => setPrice(Number(e.target.value))}
-          className="w-full h-2 bg-gray-700 cursor-pointer rounded-lg accent-yellow-400"
-        />
+        <div className="flex items-center justify-between mb-2">
+          <label className="font-semibold text-[10px] uppercase tracking-widest text-[#8e8577]">Price</label>
+          <span className="text-sm font-bold text-[#a87b32]">Up to ₹{price}</span>
+        </div>
+        <div className="relative flex items-center h-5">
+          {/* Track background */}
+          <div className="absolute w-full h-1.5 rounded-full bg-[#ebdccb]" />
+          {/* Filled portion, reflects current value */}
+          <div
+            className="absolute h-1.5 rounded-full bg-gradient-to-r from-[#c9973f] to-[#a87b32] pointer-events-none"
+            style={{ width: `${pricePct}%` }}
+          />
+          <input
+            type="range"
+            min={0}
+            max={1000}
+            step={10}
+            value={price}
+            onChange={(e) => setPrice(Number(e.target.value))}
+            className="price-range-slider relative w-full h-5 bg-transparent appearance-none cursor-pointer"
+          />
+        </div>
+        <div className="flex justify-between text-[10px] text-[#aba293] mt-1">
+          <span>₹0</span>
+          <span>₹1000</span>
+        </div>
       </div>
+
+      <style>{`
+        .price-range-slider {
+          -webkit-appearance: none;
+        }
+        .price-range-slider::-webkit-slider-runnable-track {
+          background: transparent;
+          height: 6px;
+        }
+        .price-range-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #ffffff;
+          border: 3px solid #c9973f;
+          box-shadow: 0 2px 6px rgba(168, 123, 50, 0.3);
+          cursor: pointer;
+          margin-top: -6px;
+          transition: transform 0.2s ease;
+        }
+        .price-range-slider::-webkit-slider-thumb:hover {
+          transform: scale(1.15);
+        }
+        .price-range-slider::-moz-range-track {
+          background: transparent;
+          height: 6px;
+        }
+        .price-range-slider::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #ffffff;
+          border: 3px solid #c9973f;
+          box-shadow: 0 2px 6px rgba(168, 123, 50, 0.3);
+          cursor: pointer;
+          transition: transform 0.2s ease;
+        }
+        .price-range-slider::-moz-range-thumb:hover {
+          transform: scale(1.15);
+        }
+      `}</style>
     </div>
   );
 };

@@ -2,11 +2,12 @@ import React from "react";
 
 const SortOptionFilter = ({ value, onChange }) => {
   return (
-    <div className="mb-4 flex justify-end items-center ">
+    <div className="mb-4 flex justify-end items-center">
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="p-2 bg-[#26211d] text-white cursor-pointer border-[#eacd89] border rounded-md"
+        className="p-2.5 bg-white text-[#0f0d0b] cursor-pointer border border-[#e1dacd] rounded-md text-sm
+                   focus:outline-none focus:border-[#c9973f] focus:ring-1 focus:ring-[#c9973f]/30 transition"
       >
         <option value="">Recommended</option>
         <option value="priceAsc">Price: Low to High</option>

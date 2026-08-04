@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { User, Mail, Lock, Loader, EyeOff, Eye } from "lucide-react";
+import { signInWithPopup } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loginUser,
   registerUser,
   fetchProfile,
+  googleAuth,
 } from "../redux/slices/authSlice.js";
 import { mergeCart } from "../redux/slices/cartSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
+import { FaGoogle } from "react-icons/fa";
+import { auth, provider } from "../utils/firebase.js";
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -58,6 +61,28 @@ const Login = () => {
       reset();
     } catch (err) {
       toast.error(err?.message || "An error occurred", { duration: 2000 });
+    }
+  };
+  const handleGoogle = async () => {
+    try {
+      const res = await signInWithPopup(auth, provider);
+      const idToken = await res.user.getIdToken();
+      const backendRes = await dispatch(googleAuth({ idToken })).unwrap();
+
+      localStorage.setItem("userInfo", JSON.stringify(backendRes.user || backendRes));
+      localStorage.setItem("userToken", backendRes.token);
+
+      toast.success(backendRes.message || "Login successful", { duration: 2000 });
+
+      const guestId = localStorage.getItem("guestId");
+      if (guestId) {
+        dispatch(mergeCart({ guestId, user: backendRes.user || backendRes }));
+      }
+
+      dispatch(fetchProfile());
+      navigate(redirect);
+    } catch (error) {
+      toast.error(error?.message || "Something went wrong during Google sign in", { duration: 2000 });
     }
   };
   // (Different for Login & Register)
@@ -201,6 +226,16 @@ const Login = () => {
               {isLogin ? "Register" : "Login"}
             </button>
           </p>
+           <div className="flex items-center my-6">
+          <div className="flex-1 border-t border-gray-200" />
+          <span className="px-4 text-sm text-gray-400 font-medium">OR</span>
+          <div className="flex-1 border-t border-gray-200" />
+        </div>
+
+        <button onClick={handleGoogle} className="w-full flex items-center justify-center gap-3 py-3 border  rounded-xl text-gray-700 font-medium bg-gray-200 hover:bg-gray-50 hover:border-gray-300 active:scale-[0.98] transition-all">
+          <FaGoogle className="text-red-500 text-lg" />
+          Sign in with Google
+        </button>
         </div>
 
         {/* Right Side (Dynamic Image) */}
@@ -213,6 +248,7 @@ const Login = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
         </div>
       </div>
+
     </section>
   );
 };

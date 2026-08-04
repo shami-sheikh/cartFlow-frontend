@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 import {
   updateCart,
   deleteFromCart,
@@ -10,6 +11,7 @@ import {
 
 const CartContent = ({ cart, guestId, userId, onClose }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartProducts = cart?.products || [];
 
   const increaseQty = (productId, size, color, quantity) => {
@@ -54,15 +56,25 @@ const CartContent = ({ cart, guestId, userId, onClose }) => {
     }
   };
 
+  const goToProduct = (productId) => {
+    navigate(`/product/${productId}`);
+    if (onClose) onClose();
+  };
+
   return (
     <div>
       {/* Header with Clear Cart */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold text-[#eacd89]">Your Cart</h2>
+        <h2
+          className="text-lg font-semibold text-[#0f0d0b]"
+          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
+          Your Cart
+        </h2>
         {cartProducts.length > 0 && (
           <button
             onClick={handleClearCart}
-            className="text-sm text-[#eacd89] hover:text-white transition"
+            className="text-xs font-bold uppercase tracking-widest text-[#a87b32] hover:text-[#0f0d0b] transition"
           >
             Clear Cart ✖
           </button>
@@ -71,49 +83,52 @@ const CartContent = ({ cart, guestId, userId, onClose }) => {
 
       {/* Cart Items */}
       {cartProducts.length === 0 ? (
-        <p className="text-[#eacd89]/80 text-center py-36">Your cart is empty 🛒</p>
+        <p className="text-[#aba293] text-center py-36">Your cart is empty 🛒</p>
       ) : (
         cartProducts.map((product) => (
-          <Link
-            to={`/product/${product.productId}`}
+          <div
             key={product.productId + product.size + product.color}
-            onClick={onClose} // closes drawer on click
-            className="flex items-center justify-between p-3 mb-2 rounded-xl 
-                       bg-gradient-to-r from-[#1a1410] to-[#0D0D0D] 
-                       border border-[#eacd89]/20 shadow-sm cursor-pointer 
-                       hover:bg-[#2a2117] transition"
+            onClick={() => goToProduct(product.productId)}
+            className="flex items-center justify-between p-3 mb-2 rounded-xl
+                       bg-white
+                       border border-[#ebdccb]/60 shadow-sm cursor-pointer
+                       hover:border-[#c9973f]/50 hover:shadow-md transition"
           >
             <img
               src={product.image}
               alt={product.name}
-              className="w-16 h-16 object-cover rounded-lg border border-[#eacd89]/30"
+              className="w-16 h-16 object-cover rounded-lg border border-[#ebdccb] bg-[#f0ece2]"
             />
 
             <div className="flex-1 ml-4">
-              <h3 className="text-base font-semibold text-[#eacd89]">{product.name}</h3>
-              <p className="text-xs text-[#eacd89]/70">
+              <h3 className="text-base font-semibold text-[#0f0d0b]">{product.name}</h3>
+              <p className="text-xs text-[#8e8577]">
                 Size: {product.size} • Color: {product.color}
               </p>
 
               {/* Quantity Controls */}
               <div
                 className="flex items-center space-x-2 mt-2"
-                onClick={(e) => e.preventDefault()} // stop Link when clicking qty
+                onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  onClick={() =>
-                    decreaseQty(product.productId, product.size, product.color, product.quantity)
-                  }
-                  className="px-3 py-1 border border-[#eacd89] rounded text-[#eacd89] hover:bg-[#eacd89] hover:text-black transition"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    decreaseQty(product.productId, product.size, product.color, product.quantity);
+                  }}
+                  className="px-3 py-1 border border-[#c9973f] rounded text-[#a87b32] hover:bg-[#c9973f] hover:text-white transition"
                 >
                   -
                 </button>
-                <span className="px-2 text-[#eacd89]">{product.quantity}</span>
+                <span className="px-2 text-[#0f0d0b] font-medium">{product.quantity}</span>
                 <button
-                  onClick={() =>
-                    increaseQty(product.productId, product.size, product.color, product.quantity)
-                  }
-                  className="px-3 py-1 border border-[#eacd89] rounded text-[#eacd89] hover:bg-[#eacd89] hover:text-black transition"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    increaseQty(product.productId, product.size, product.color, product.quantity);
+                  }}
+                  className="px-3 py-1 border border-[#c9973f] rounded text-[#a87b32] hover:bg-[#c9973f] hover:text-white transition"
                 >
                   +
                 </button>
@@ -123,23 +138,24 @@ const CartContent = ({ cart, guestId, userId, onClose }) => {
             {/* Price + Remove */}
             <div
               className="flex flex-col items-end"
-              onClick={(e) => e.preventDefault()} // prevent link on remove
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-sm font-bold text-[#eacd89]">
+              <div className="text-sm font-bold text-[#a87b32]">
                 ${(product.price * product.quantity).toFixed(2)}
               </div>
               <button
-                onClick={() => removeItem(product.productId, product.size, product.color)}
-                className="mt-1 text-[#eacd89]/70 hover:text-red-500 transition"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeItem(product.productId, product.size, product.color);
+                }}
+                aria-label="Remove item"
+                className="mt-1 text-[#aba293] hover:text-red-500 transition"
               >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/128/6861/6861362.png"
-                  alt="remove"
-                  className="w-4 h-4 invert"
-                />
+                <Trash2 size={14} />
               </button>
             </div>
-          </Link>
+          </div>
         ))
       )}
     </div>

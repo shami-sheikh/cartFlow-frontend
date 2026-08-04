@@ -23,13 +23,15 @@ const ProductGrid = ({ products = [], loading, error, selectedColors = [] }) => 
   useScrollToTop([products]);
 
   if (loading) {
-    return <p className="text-center py-20">Loading...</p>;
+    return <p className="text-center py-20 text-[#8e8577]">Loading...</p>;
   }
   if (error) {
-    return <p className="text-center text-red-500">Error: {error}</p>;
+    return <p className="text-center py-20 text-red-500">Error: {error}</p>;
   }
   if (!products || products.length === 0) {
-    return <p className="text-center py-20 text-gray-400">No products found</p>;
+    return (
+      <p className="text-center py-20 text-[#aba293]">No products found</p>
+    );
   }
 
   return (
@@ -41,7 +43,9 @@ const ProductGrid = ({ products = [], loading, error, selectedColors = [] }) => 
     >
       {products.map((item) => {
         // Color-to-image logic
-        let imageToShow = item.images?.[0]?.url || "https://via.placeholder.com/300x300/1a1a1a/eacd89?text=No+Image";
+        let imageToShow =
+          item.images?.[0]?.url ||
+          "https://via.placeholder.com/300x300/f0ece2/a87b32?text=No+Image";
         let altToShow = item.name;
         if (selectedColors && selectedColors.length > 0 && Array.isArray(item.colors) && Array.isArray(item.images)) {
           const matchColor = selectedColors.find((c) => item.colors.includes(c));
@@ -58,42 +62,42 @@ const ProductGrid = ({ products = [], loading, error, selectedColors = [] }) => 
             key={item._id}
             variants={cardVariants}
             whileHover={{ scale: 1.02 }}
-            className="bg-[#1a1a1a] border border-[#eacd89]/30 rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition"
+            className="bg-white border border-[#ebdccb]/60 rounded-xl shadow-sm overflow-hidden group hover:shadow-lg hover:border-[#c9973f]/40 transition"
           >
             <Link to={`/product/${item._id}`}>
               {/* Product Image */}
-              <div className="relative w-full h-64 overflow-hidden">
+              <div className="relative w-full h-64 overflow-hidden bg-[#f0ece2]">
                 <img
                   src={imageToShow}
                   alt={altToShow}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   onError={(e) => {
                     e.target.src =
-                      "https://via.placeholder.com/300x300/1a1a1a/eacd89?text=No+Image";
+                      "https://via.placeholder.com/300x300/f0ece2/a87b32?text=No+Image";
                   }}
                 />
                 {item.discountPrice && item.discountPrice < item.price && (
-                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
                     Sale
                   </span>
                 )}
               </div>
               {/* Product Info */}
               <div className="flex flex-col gap-3 p-5">
-                <h3 className="text-lg font-medium tracking-wide text-[#f6e6b7] group-hover:text-[#eacd89] transition-colors duration-300 truncate">
+                <h3 className="text-lg font-medium tracking-wide text-[#0f0d0b] group-hover:text-[#a87b32] transition-colors duration-300 truncate">
                   {item.name}
                 </h3>
                 {/* Ratings */}
-                <div className="flex items-center gap-1 text-[#eacd89]">
+                <div className="flex items-center gap-1 text-[#c9973f]">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       size={16}
-                      fill={i < Math.floor(item.rating) ? "#eacd89" : "transparent"}
-                      stroke="#eacd89"
+                      fill={i < Math.floor(item.rating) ? "#c9973f" : "transparent"}
+                      stroke="#c9973f"
                     />
                   ))}
-                  <span className="text-xs text-gray-400 ml-1">
+                  <span className="text-xs text-[#aba293] ml-1">
                     ({item.numReviews})
                   </span>
                 </div>
@@ -102,15 +106,15 @@ const ProductGrid = ({ products = [], loading, error, selectedColors = [] }) => 
                   <div className="flex flex-col">
                     {item.discountPrice && item.discountPrice < item.price ? (
                       <>
-                        <span className="text-xl font-bold text-[#eacd89]">
+                        <span className="text-xl font-bold text-[#a87b32]">
                           ₹{item.discountPrice}
                         </span>
-                        <span className="text-sm line-through text-gray-500">
+                        <span className="text-sm line-through text-[#aba293]">
                           ₹{item.price}
                         </span>
                       </>
                     ) : (
-                      <span className="text-xl font-bold text-[#eacd89]">
+                      <span className="text-xl font-bold text-[#a87b32]">
                         ₹{item.price}
                       </span>
                     )}
@@ -118,14 +122,14 @@ const ProductGrid = ({ products = [], loading, error, selectedColors = [] }) => 
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-4 py-1.5 text-sm rounded-full border border-[#eacd89] text-[#eacd89] 
-                    hover:bg-[#eacd89] hover:text-black transition-all duration-300"
+                    className="px-4 py-1.5 text-sm rounded-full border border-[#c9973f] text-[#a87b32]
+                    hover:bg-[#c9973f] hover:text-white transition-all duration-300"
                   >
                     View
                   </motion.button>
                 </div>
                 {/* Stock & Material */}
-                <div className="flex items-center justify-between text-xs text-gray-400">
+                <div className="flex items-center justify-between text-xs text-[#aba293]">
                   <span>
                     Stock: {item.countInStock > 0 ? item.countInStock : "Out of Stock"}
                   </span>

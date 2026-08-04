@@ -20,7 +20,6 @@ const ProductDetails = ({ productId }) => {
   const { user, guestId } = useSelector((state) => state.auth);
   const { id } = useParams();
   const [mainImage, setMainImage] = useState("");
-  // Remove local isLoading, use Redux cartLoading
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,7 +40,6 @@ const ProductDetails = ({ productId }) => {
     }
   }, [selectedProduct]);
 
-  // useForm
   const {
     register,
     handleSubmit,
@@ -56,6 +54,16 @@ const ProductDetails = ({ productId }) => {
       color: "",
     },
   });
+
+  // Auto-select the first available size and color when a product loads
+  useEffect(() => {
+    if (selectedProduct?.sizes?.length) {
+      setValue("size", selectedProduct.sizes[0]);
+    }
+    if (selectedProduct?.colors?.length) {
+      setValue("color", selectedProduct.colors[0]);
+    }
+  }, [selectedProduct, setValue]);
 
   const quantity = watch("quantity");
   const selectedSize = watch("size");
@@ -115,12 +123,18 @@ const ProductDetails = ({ productId }) => {
     });
   };
 
-  if (loading) return <p className="text-center py-20">Loading...</p>;
-  if (error) return <p className="text-center">Error: {error}</p>;
+  if (loading)
+    return (
+      <p className="text-center py-20 text-[#8e8577]">Loading...</p>
+    );
+  if (error)
+    return (
+      <p className="text-center py-20 text-red-500">Error: {error}</p>
+    );
 
   return (
     <>
-      <section className="p-6 min-h-screen">
+      <section className="p-6 min-h-screen bg-[#fcfaf6]">
         {/* Back button */}
         {location.pathname !== "/" && (
           <motion.div
@@ -131,9 +145,9 @@ const ProductDetails = ({ productId }) => {
           >
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 px-4 py-2.5 
-                border border-[#eacd89] text-[#eacd89] 
-                hover:bg-[#eacd89] hover:text-black 
+              className="flex items-center gap-2 px-4 py-2.5
+                border border-[#c9973f] text-[#a87b32]
+                hover:bg-[#c9973f] hover:text-white
                 font-semibold rounded-lg transition"
             >
               <IoReturnDownBackOutline className="text-lg" />
@@ -161,9 +175,9 @@ const ProductDetails = ({ productId }) => {
                   <img
                     src={mainImage}
                     alt="Main Product"
-                    className="w-full max-h-[500px] object-cover rounded-xl shadow-lg border border-[#eacd89]/40"
+                    className="w-full max-h-[500px] object-cover rounded-xl shadow-sm border border-[#ebdccb] bg-[#f0ece2]"
                     onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/500x500/1a1a1a/eacd89?text=Image+Not+Found";
+                      e.target.src = "https://via.placeholder.com/500x500/f0ece2/a87b32?text=Image+Not+Found";
                     }}
                   />
                 </motion.div>
@@ -175,18 +189,18 @@ const ProductDetails = ({ productId }) => {
                       key={index}
                       whileHover={{ scale: 1.05 }}
                       className={`cursor-pointer border-2 rounded-lg overflow-hidden ${
-                        mainImage === image.url 
-                          ? "border-yellow-400" 
-                          : "border-[#eacd89]"
+                        mainImage === image.url
+                          ? "border-[#c9973f]"
+                          : "border-[#ebdccb]"
                       }`}
                       onClick={() => setMainImage(image.url)}
                     >
                       <img
                         src={image.url}
                         alt={image.alt || `Thumbnail ${index + 1}`}
-                        className="w-full h-20 object-cover"
+                        className="w-full h-20 object-cover bg-[#f0ece2]"
                         onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/100x100/1a1a1a/eacd89?text=Image+Error";
+                          e.target.src = "https://via.placeholder.com/100x100/f0ece2/a87b32?text=Image+Error";
                         }}
                       />
                     </motion.div>
@@ -200,18 +214,18 @@ const ProductDetails = ({ productId }) => {
                       key={index}
                       whileHover={{ scale: 1.1 }}
                       className={`flex-shrink-0 cursor-pointer border-2 rounded-lg overflow-hidden ${
-                        mainImage === image.url 
-                          ? "border-yellow-400" 
-                          : "border-[#eacd89]"
+                        mainImage === image.url
+                          ? "border-[#c9973f]"
+                          : "border-[#ebdccb]"
                       }`}
                       onClick={() => setMainImage(image.url)}
                     >
                       <img
                         src={image.url}
                         alt={image.alt || `Thumbnail ${index + 1}`}
-                        className="w-20 h-20 object-cover"
+                        className="w-20 h-20 object-cover bg-[#f0ece2]"
                         onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/100x100/1a1a1a/eacd89?text=Image+Error";
+                          e.target.src = "https://via.placeholder.com/100x100/f0ece2/a87b32?text=Image+Error";
                         }}
                       />
                     </motion.div>
@@ -226,23 +240,24 @@ const ProductDetails = ({ productId }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="text-3xl font-bold text-[#eacd89]"
+                  className="text-3xl font-bold text-[#0f0d0b]"
+                  style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
                 >
                   {selectedProduct.name}
                 </motion.h1>
 
                 {/* Description */}
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-[#5c5548] leading-relaxed">
                   {selectedProduct.description}
                 </p>
 
                 {/* Price */}
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl font-extrabold text-[#eacd89]">
+                  <span className="text-2xl font-extrabold text-[#a87b32]">
                     ₹{selectedProduct.price}
                   </span>
                   {selectedProduct.originalPrice && (
-                    <span className="line-through text-gray-500">
+                    <span className="line-through text-[#aba293]">
                       ₹{selectedProduct.originalPrice}
                     </span>
                   )}
@@ -250,22 +265,22 @@ const ProductDetails = ({ productId }) => {
 
                 {/* Quantity Selector */}
                 <div className="flex items-center gap-4">
-                  <h3 className="font-semibold text-[#eacd89]">Quantity:</h3>
-                  <div className="flex items-center border border-[#eacd89] rounded-lg overflow-hidden">
+                  <h3 className="font-semibold text-[#0f0d0b]">Quantity:</h3>
+                  <div className="flex items-center border border-[#c9973f] rounded-lg overflow-hidden">
                     <button
                       type="button"
                       onClick={handleDecrease}
-                      className="px-4 py-2 hover:bg-[#eacd89] hover:text-black text-[#eacd89] font-bold text-lg transition"
+                      className="px-4 py-2 hover:bg-[#c9973f] hover:text-white text-[#a87b32] font-bold text-lg transition"
                     >
                       −
                     </button>
-                    <span className="px-6 py-2 bg-[#2322219a] text-white font-semibold">
+                    <span className="px-6 py-2 bg-[#f0ece2] text-[#0f0d0b] font-semibold">
                       {quantity}
                     </span>
                     <button
                       type="button"
                       onClick={handleIncrease}
-                      className="px-4 py-2 hover:bg-[#eacd89] hover:text-black transition text-[#eacd89] font-bold text-lg "
+                      className="px-4 py-2 hover:bg-[#c9973f] hover:text-white transition text-[#a87b32] font-bold text-lg"
                     >
                       +
                     </button>
@@ -275,7 +290,7 @@ const ProductDetails = ({ productId }) => {
                 {/* Sizes */}
                 {selectedProduct.sizes?.length > 0 && (
                   <div>
-                    <h3 className="font-semibold text-[#eacd89] mb-2">Sizes</h3>
+                    <h3 className="font-semibold text-[#0f0d0b] mb-2">Sizes</h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedProduct.sizes.map((size, index) => (
                         <motion.button
@@ -283,11 +298,11 @@ const ProductDetails = ({ productId }) => {
                           type="button"
                           whileHover={{ scale: 1.1 }}
                           onClick={() => setValue("size", size)}
-                          className={`px-3 py-1 border border-[#eacd89] rounded-lg transition
+                          className={`px-3 py-1 border border-[#c9973f] rounded-lg transition
                             ${
                               selectedSize === size
-                                ? "bg-[#eacd89] text-black"
-                                : "text-white"
+                                ? "bg-[#c9973f] text-white"
+                                : "text-[#0f0d0b] hover:bg-[#f0ece2]"
                             }`}
                         >
                           {size}
@@ -300,7 +315,7 @@ const ProductDetails = ({ productId }) => {
                 {/* Colors */}
                 {selectedProduct.colors?.length > 0 && (
                   <div>
-                    <h3 className="font-semibold text-[#eacd89] mb-2">
+                    <h3 className="font-semibold text-[#0f0d0b] mb-2">
                       Colors
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -312,12 +327,12 @@ const ProductDetails = ({ productId }) => {
                             type="button"
                             whileHover={{ scale: 1.15 }}
                             onClick={() => setValue("color", color)}
-                            className={`w-8 h-8 rounded-full cursor-pointer transition border-2 ${
+                            className={`w-8 h-8 rounded-full cursor-pointer transition border-2 shadow-sm ${
                               selectedColor === color
-                                ? "border-yellow-400"
-                                : "border-transparent"
+                                ? "border-[#c9973f]"
+                                : "border-[#e1dacd]"
                             }`}
-                            style={{ backgroundColor: hex, filter: selectedColor === color ? "brightness(0.9)" : "none" }}
+                            style={{ backgroundColor: hex, filter: selectedColor === color ? "brightness(0.92)" : "none" }}
                             title={color}
                           ></motion.button>
                         );
@@ -334,11 +349,11 @@ const ProductDetails = ({ productId }) => {
                   whileTap={{ scale: 0.95 }}
                   className={`px-6 ${
                     cartLoading && "cursor-not-allowed opacity-50"
-                  } py-3 w-full border border-[#eacd89] text-[#eacd89] hover:bg-[#eacd89] hover:text-black font-semibold rounded-lg transition flex justify-center items-center`}
+                  } py-3 w-full bg-[#0f0d0b] text-white hover:bg-[#c9973f] font-semibold rounded-lg transition flex justify-center items-center`}
                 >
                   {cartLoading ? (
                     <span className="flex items-center justify-center gap-2">
-                      Adding... <PulseLoader size={8} color="#000" />
+                      Adding... <PulseLoader size={8} color="#fff" />
                     </span>
                   ) : (
                     "Add to Cart"
@@ -356,11 +371,15 @@ const ProductDetails = ({ productId }) => {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
+        className="bg-[#fcfaf6]"
       >
-        <h2 className="text-yellow-500 font-bold md:text-3xl text-2xl mt-8 text-center capitalize">
+        <h2
+          className="text-[#0f0d0b] font-light md:text-3xl text-2xl mt-8 text-center"
+          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
           You may also like
         </h2>
-        <div className="h-[3px] w-44 mt-2 mx-auto rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+        <div className="h-[3px] w-44 mt-3 mx-auto rounded-full bg-gradient-to-r from-[#c9973f] to-[#a87b32]"></div>
         <div className="max-w-6xl mx-auto p-8">
           <ProductGrid products={similar} loading={loading} error={error} />
         </div>

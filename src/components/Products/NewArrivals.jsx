@@ -22,140 +22,169 @@ const NewArrivals = () => {
   }, []);
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
-      {/* Section Header */}
-      <div className="text-center mb-10">
-        <h2 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 bg-clip-text text-transparent drop-shadow-lg">
-          ✨ Luxury New Arrivals ✨
-        </h2>
-        <p className="text-gray-400 mt-3 max-w-2xl mx-auto text-sm sm:text-base">
-          Hand-picked premium pieces designed to elevate your everyday look —
-          timeless style meets modern comfort.
-        </p>
-      </div>
+    <section className="bg-[#fcfaf6] py-20 sm:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
+        {/* Section Header — matches the "Boutique Feed / Curated Selection" vocabulary used elsewhere */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14 pb-8 border-b border-[#ebdccb]/60">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-5 h-[1px] bg-[#c9973f]" />
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#c9973f] font-medium">
+                Fresh on the Floor
+              </span>
+            </div>
+            <h2
+              className="text-4xl sm:text-5xl font-light text-[#0f0d0b] tracking-tight leading-[1.05]"
+              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            >
+              <span className="italic">New</span> Arrivals
+            </h2>
+          </div>
+          <p className="text-sm text-[#8e8577] max-w-xs leading-relaxed">
+            {newArrivals.length > 0
+              ? `${newArrivals.length} pieces, just landed — hand-picked ahead of the season.`
+              : "Hand-picked pieces, timeless style meets modern comfort."}
+          </p>
+        </div>
 
-      {/* Slider */}
-      <Splide
-        options={{
-          perPage: 4,
-          perMove: 1,
-          gap: "1.5rem",
-          pagination: true,
-          arrows: true,
-          breakpoints: {
-            1280: { perPage: 3 },
-            1024: { perPage: 2 },
-            640: { perPage: 1 },
-          },
-        }}
-        aria-label="New Arrivals"
-      >
-        {newArrivals.map((item) => (
-          <SplideSlide key={item._id}>
-            <div className="p-2">
-              <Link
-                to={`/product/${item._id}`}
-                className="relative rounded-2xl overflow-hidden bg-gradient-to-b from-[#1c1917] to-[#2a2520] border border-[#eacd89]/30 shadow-[0_3px_15px_rgba(234,205,137,0.12)] hover:shadow-[0_6px_25px_rgba(234,205,137,0.25)] hover:border-[#eacd89]/70 transition-all duration-500 flex flex-col"
-              >
-                {/* New Badge */}
-                <span className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-semibold px-3 py-1 rounded-full shadow-md z-10">
-                  New
-                </span>
+        {/* Slider */}
+        <Splide
+          options={{
+            perPage: 4,
+            perMove: 1,
+            gap: "2rem",
+            pagination: false,
+            arrows: true,
+            breakpoints: {
+              1280: { perPage: 3 },
+              1024: { perPage: 2 },
+              640: { perPage: 1 },
+            },
+          }}
+          aria-label="New Arrivals"
+          onMoved={(splide) => {
+            const pct =
+              ((splide.index + 1) / splide.Components.Slides.length) * 100;
+            const bar = document.getElementById("na-progress");
+            if (bar) bar.style.width = `${pct}%`;
+          }}
+        >
+          {newArrivals.map((item, idx) => (
+            <SplideSlide key={item._id}>
+              <Link to={`/product/${item._id}`} className="group block">
+                {/* Image with editorial corner-bracket framing */}
+                <div className="relative aspect-[3/4] mb-5">
+                  {/* Serial index — real signature element, not decoration: it's the card's actual position */}
+                  <span
+                    className="absolute -top-3 -left-1 text-[13px] font-semibold tracking-[0.15em] text-[#c9973f]/70 select-none z-10"
+                    style={{ fontVariantNumeric: "tabular-nums" }}
+                  >
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
 
-                {/* Product Image */}
-                <div className="w-full h-72 overflow-hidden">
-                  <img
-                    src={item.images?.[0]?.url || item.image || "/placeholder.png"}
-                    alt={item.name}
-                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700 ease-out"
-                  />
-                  {/* Subtle overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 hover:opacity-100 transition duration-500" />
+                  <div className="relative w-full h-full overflow-hidden bg-[#f0ece2]">
+                    <img
+                      src={item.images?.[0]?.url || item.image || "/placeholder.png"}
+                      alt={item.name}
+                      className="w-full h-full object-cover grayscale-[15%] group-hover:grayscale-0 group-hover:scale-[1.04] transition-all duration-700 ease-out"
+                    />
+                  </div>
+
+                  {/* Corner brackets, revealed on hover — museum-label framing */}
+                  <div className="pointer-events-none absolute inset-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <span className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#c9973f]" />
+                    <span className="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#c9973f]" />
+                    <span className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#c9973f]" />
+                    <span className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#c9973f]" />
+                  </div>
+
+                  {/* New tag — understated, not a loud badge */}
+                  <span className="absolute top-3 right-3 text-[9px] font-bold uppercase tracking-[0.2em] text-white bg-[#0f0d0b]/80 backdrop-blur-sm px-2.5 py-1">
+                    New
+                  </span>
                 </div>
 
-                {/* Info Section */}
-                <div className="p-5 flex flex-col gap-2 text-center">
-                  <h3 className="text-lg font-semibold text-[#f6e6b7] group-hover:text-[#eacd89] transition-colors duration-300 line-clamp-1">
+                {/* Info */}
+                <div className="flex flex-col gap-1 px-0.5">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#aba293]">
+                    {item.brand || "Exclusive"} · {item.category}
+                  </p>
+                  <h3
+                    className="text-xl text-[#0f0d0b] group-hover:text-[#a87b32] transition-colors duration-300 leading-snug"
+                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
                     {item.name}
                   </h3>
-                  <p className="text-xs text-gray-400 italic line-clamp-1">
-                    {item.brand || "Exclusive Brand"} • {item.category}
-                  </p>
 
-                  <div className="flex items-center justify-center gap-3 mt-2">
-                    <span className="text-xl font-bold text-[#eacd89]">
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-[15px] font-medium text-[#0f0d0b]">
                       ₹{item.price}
                     </span>
                     {item.discountPrice && (
-                      <span className="text-sm line-through text-gray-500">
+                      <span className="text-xs line-through text-[#c2b9a8]">
                         ₹{item.discountPrice}
                       </span>
                     )}
-                  </div>
-
-                  {/* Rating */}
-                  {item.rating && (
-                    <div className="flex justify-center gap-1 mt-1">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <span
-                          key={i}
-                          className={`text-sm ${
-                            i < Math.round(item.rating)
-                              ? "text-yellow-400"
-                              : "text-gray-600"
-                          }`}
-                        >
-                          ★
-                        </span>
-                      ))}
-                      <span className="text-xs text-gray-400 ml-1">
-                        ({item.numReviews || 0})
+                    {item.rating > 0 && (
+                      <span className="ml-auto flex items-center gap-1 text-[11px] text-[#c9973f]">
+                        ★ <span className="text-[#8e8577]">{item.rating.toFixed(1)}</span>
                       </span>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </Link>
-            </div>
-          </SplideSlide>
-        ))}
-      </Splide>
+            </SplideSlide>
+          ))}
+        </Splide>
 
-      {/* Custom Slider Styles */}
-      <style>
-        {`
-          .splide__arrow {
-            background: rgba(28, 25, 23, 0.7);
-            border-radius: 50%;
-            padding: 8px;
-            transition: all 0.3s ease;
-          }
-          .splide__arrow:hover {
-            background: rgba(28, 25, 23, 0.9);
-            transform: scale(1.1);
-          }
-          .splide__arrow svg {
-            fill: #eacd89;
-            width: 18px;
-            height: 18px;
-          }
-          .splide__pagination {
-            margin-top: 1.5rem;
-            bottom: -25px;
-          }
-          .splide__pagination__page {
-            background: #9ca3af;
-            opacity: 0.6;
-            width: 10px;
-            height: 10px;
-            transition: all 0.3s ease;
-          }
-          .splide__pagination__page.is-active {
-            background: #eacd89;
-            transform: scale(1.3);
-            opacity: 1;
-          }
-        `}
-      </style>
+        {/* Thin progress-line pagination + arrows, replacing generic dots */}
+        <div className="flex items-center gap-6 mt-10">
+          <div className="flex-1 h-[1px] bg-[#ebdccb] relative overflow-hidden">
+            <div
+              id="na-progress"
+              className="absolute left-0 top-0 h-full bg-[#c9973f] transition-all duration-500 ease-out"
+              style={{ width: `${newArrivals.length ? (1 / newArrivals.length) * 100 : 0}%` }}
+            />
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[#aba293] shrink-0">
+            Scroll to explore
+          </span>
+        </div>
+      </div>
+
+      {/* Slider arrow styling */}
+      <style>{`
+        .splide__arrow {
+          background: transparent;
+          border: 1px solid #e1dacd;
+          border-radius: 9999px;
+          width: 40px;
+          height: 40px;
+          transition: all 0.3s ease;
+        }
+        .splide__arrow:hover {
+          background: #0f0d0b;
+          border-color: #0f0d0b;
+        }
+        .splide__arrow svg {
+          fill: #0f0d0b;
+          width: 15px;
+          height: 15px;
+          transition: fill 0.3s ease;
+        }
+        .splide__arrow:hover svg {
+          fill: #fcfaf6;
+        }
+        .splide__arrow--prev {
+          left: -1.25rem;
+        }
+        .splide__arrow--next {
+          right: -1.25rem;
+        }
+        @media (max-width: 1024px) {
+          .splide__arrow { display: none; }
+        }
+      `}</style>
     </section>
   );
 };

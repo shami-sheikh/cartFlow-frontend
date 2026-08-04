@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCreatedOrder } from "../../redux/slices/orderSlice";
 import { useForm } from "react-hook-form";
@@ -39,7 +39,19 @@ const Checkout = () => {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+    setValue,
+  } = useForm({
+    defaultValues: {
+      name: user?.name || "",
+      email: user?.email || "",
+    },
+  });
+
+  // Pre-fill name & email whenever user data becomes available/changes
+  useEffect(() => {
+    if (user?.name) setValue("name", user.name);
+    if (user?.email) setValue("email", user.email);
+  }, [user, setValue]);
 
   const paymentMethod = watch("paymentMethod");
 
@@ -156,7 +168,6 @@ const Checkout = () => {
       } else if (data.paymentMethod === "razorpay") {
         const isLoaded = await loadRazorpayScript();
         if (isLoaded) {
-          // Patch handleRazorpayPayment to set createdOrder after finalizeCheckout
           handleRazorpayPayment(
             {
               ...data,
@@ -176,15 +187,18 @@ const Checkout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#18130F] text-gray-100 px-4 py-12">
+    <div className="min-h-screen bg-[#fcfaf6] px-4 py-12">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left: Shipping + Payment Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="md:col-span-2 bg-[#1F1A16] p-8 rounded-2xl shadow-lg"
+          className="md:col-span-2 bg-white border border-[#ebdccb]/60 p-8 rounded-2xl shadow-sm"
         >
-          <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] bg-clip-text text-transparent">
-            📝 Shipping Information
+          <h2
+            className="text-2xl font-light text-[#0f0d0b] mb-6"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Shipping Information
           </h2>
 
           {/* Full Name + Email */}
@@ -194,7 +208,7 @@ const Checkout = () => {
                 type="text"
                 placeholder="Full Name"
                 {...register("name", { required: "Full name is required" })}
-                className="p-3 rounded-lg hover:border-[#C6A15B] w-full bg-[#29221C] border border-[#3D342D] focus:outline-none focus:ring-1 focus:ring-[#C6A15B]"
+                className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
               />
               {errors.name && (
                 <span className="text-red-500 text-sm mt-1">
@@ -211,7 +225,7 @@ const Checkout = () => {
                   required: "Email is required",
                   pattern: { value: /\S+@\S+\.\S+/, message: "Invalid email" },
                 })}
-                className="p-3 rounded-lg w-full bg-[#29221C] border border-[#3D342D] focus:outline-none hover:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B]"
+                className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
               />
               {errors.email && (
                 <span className="text-red-500 text-sm mt-1">
@@ -227,7 +241,7 @@ const Checkout = () => {
               type="text"
               placeholder="Street Address"
               {...register("address", { required: "Address is required" })}
-              className="p-3 rounded-lg w-full bg-[#29221C] border border-[#3D342D] focus:outline-none hover:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B]"
+              className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
             />
             {errors.address && (
               <span className="text-red-500 text-sm mt-1">
@@ -243,7 +257,7 @@ const Checkout = () => {
                 type="text"
                 placeholder="City"
                 {...register("city", { required: "City is required" })}
-                className="p-3 rounded-lg w-full bg-[#29221C] border border-[#3D342D] focus:outline-none hover:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B]"
+                className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
               />
               {errors.city && (
                 <span className="text-red-500 text-sm mt-1">
@@ -259,7 +273,7 @@ const Checkout = () => {
                 {...register("postalCode", {
                   required: "Postal code is required",
                 })}
-                className="p-3 rounded-lg w-full bg-[#29221C] border border-[#3D342D] focus:outline-none hover:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B]"
+                className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
               />
               {errors.postalCode && (
                 <span className="text-red-500 text-sm mt-1">
@@ -282,7 +296,7 @@ const Checkout = () => {
                   message: "Please enter a valid 10-digit phone number",
                 },
               })}
-              className="p-3 rounded-lg w-full bg-[#29221C] border border-[#3D342D] focus:outline-none hover:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B]"
+              className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] placeholder-[#aba293] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
             />
             {errors.number && (
               <span className="text-red-500 text-sm mt-1">
@@ -295,7 +309,7 @@ const Checkout = () => {
           <div className="flex flex-col mt-4">
             <select
               {...register("country", { required: "Country is required" })}
-              className="p-3 rounded-lg w-full bg-[#29221C] border border-[#3D342D] focus:outline-none hover:border-[#C6A15B] focus:ring-1 focus:ring-[#C6A15B]"
+              className="p-3 rounded-lg w-full bg-[#fcfaf6] border border-[#e1dacd] text-[#0f0d0b] hover:border-[#c9973f]/60 focus:outline-none focus:ring-1 focus:ring-[#c9973f]/40 focus:border-[#c9973f] transition"
               defaultValue=""
             >
               <option value="" disabled>
@@ -318,25 +332,28 @@ const Checkout = () => {
           </div>
 
           {/* Payment Method */}
-          <h2 className="text-2xl font-bold mt-8 mb-4 bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] bg-clip-text text-transparent">
-            💳 Payment Method
+          <h2
+            className="text-2xl font-light text-[#0f0d0b] mt-8 mb-4"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Payment Method
           </h2>
           <div className="flex gap-6 mb-1">
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#0f0d0b]">
               <input
                 type="radio"
                 value="razorpay"
                 {...register("paymentMethod", { required: true })}
-                className="accent-[#C6A15B]"
+                className="accent-[#c9973f]"
               />
               Razorpay
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#0f0d0b]">
               <input
                 type="radio"
                 value="cod"
                 {...register("paymentMethod", { required: true })}
-                className="accent-[#C6A15B]"
+                className="accent-[#c9973f]"
               />
               Cash on Delivery
             </label>
@@ -350,24 +367,27 @@ const Checkout = () => {
           <button
             type="submit"
             disabled={isProcessing}
-            className="mt-8 w-full py-3 rounded-xl font-semibold text-black bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-8 w-full py-3 rounded-xl font-semibold text-white bg-[#0f0d0b] hover:bg-[#c9973f] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isProcessing ? "Processing..." : "Place Order"}
           </button>
 
           {paymentMethod === "razorpay" && (
-            <p className="text-sm text-gray-400 mt-4 text-center">
+            <p className="text-sm text-[#8e8577] mt-4 text-center">
               You will be redirected to Razorpay for secure payment.
             </p>
           )}
         </form>
 
         {/* Right: Order Summary */}
-        <div className="bg-[#1F1A16] p-8 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-[#C6A15B] to-[#8C6C3A] bg-clip-text text-transparent">
-            🛒 Order Summary
+        <div className="bg-white border border-[#ebdccb]/60 p-8 rounded-2xl shadow-sm h-fit">
+          <h2
+            className="text-2xl font-light text-[#0f0d0b] mb-6"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            Order Summary
           </h2>
-          <ul className="divide-y divide-[#3D342D]">
+          <ul className="divide-y divide-[#ebdccb]/60">
             {cartItems.map((item, idx) => (
               <Link
                 to={`/product/${item.productId}`}
@@ -377,42 +397,42 @@ const Checkout = () => {
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-16 h-16 object-cover rounded-lg"
+                  className="w-16 h-16 object-cover rounded-lg bg-[#f0ece2] border border-[#ebdccb]"
                 />
                 <div className="flex-1">
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-gray-400">
+                  <p className="font-medium text-[#0f0d0b]">{item.name}</p>
+                  <p className="text-sm text-[#8e8577]">
                     Size: {item.size} | Color: {item.color}
                   </p>
-                  <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
+                  <p className="text-sm text-[#8e8577]">Qty: {item.quantity}</p>
                 </div>
-                <span className="font-semibold text-[#C6A15B] whitespace-nowrap">
+                <span className="font-semibold text-[#a87b32] whitespace-nowrap">
                   ₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}
                 </span>
               </Link>
             ))}
           </ul>
 
-          <div className="space-y-2 mt-6 text-sm">
+          <div className="space-y-2 mt-6 text-sm text-[#0f0d0b]">
             <div className="flex justify-between">
               <span>Subtotal:</span>
-              <span className="text-gray-300">₹{subtotal.toFixed(2)}</span>
+              <span className="text-[#5c5548]">₹{subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Discount:</span>
-              <span className="text-green-400">-₹{discount.toFixed(2)}</span>
+              <span className="text-emerald-600">-₹{discount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span>Delivery:</span>
-              <span className="text-gray-300">
+              <span className="text-[#5c5548]">
                 {deliveryCharge === 0 ? "Free" : `₹${deliveryCharge}`}
               </span>
             </div>
           </div>
 
-          <div className="flex justify-between font-bold text-lg mt-6 border-t border-[#3D342D] pt-4">
+          <div className="flex justify-between font-bold text-lg mt-6 border-t border-[#ebdccb] pt-4 text-[#0f0d0b]">
             <span>Total:</span>
-            <span className="text-[#C6A15B]">₹{total.toFixed(2)}</span>
+            <span className="text-[#a87b32]">₹{total.toFixed(2)}</span>
           </div>
         </div>
       </div>

@@ -24,7 +24,7 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ForgotPasswordOtpVerification from "./pages/ForgotPasswordOtpVerification.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ScrollToTop from "./components/Products/ScrollToTop.jsx";
-import CustomCursor from "./hooks/CustomCursor.js"
+import CustomCursor from "./hooks/CustomCursor.js";
 import AdminProtectedRoutes from "./components/Admin/AdminProtectedRoutes.jsx";
 import ProtectedRoute from "./components/Common/ProtectedRoute.jsx";
 
@@ -33,41 +33,52 @@ const App = () => {
     <>
       <BrowserRouter>
         <ScrollToTop />
-        <CustomCursor/>
+        <CustomCursor />
         <Toaster position="top-right" />
         <Scroller />
-        <Routes>         
-           {/* User Routes with Layout */}
-  <Route path="/" element={<UserLayout />}>
-    <Route index element={<Home />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/otp-verify" element={<OTPVerification />} />
-    <Route path="/forgot-password" element={<ForgotPassword />} />
-    <Route path="/forgot-password-verify" element={<ForgotPasswordOtpVerification />} />
-    <Route path="/reset-password" element={<ResetPassword />} />
-    <Route path="/collections/:collectionId" element={<CollectionPage />} />
-    <Route path="/product/:id" element={<ProductDetails />} />
+        <Routes>
+          {/* User Routes with Layout */}
+          <Route path="/" element={<UserLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/otp-verify" element={<OTPVerification />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/forgot-password-verify"
+              element={<ForgotPasswordOtpVerification />}
+            />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/collections/:collectionId"
+              element={<CollectionPage />}
+            />
+            <Route path="/product/:id" element={<ProductDetails />} />
 
-    {/*  Protected Routes */}
-    <Route element={<ProtectedRoute />}>
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-      <Route path="/order-details/:orderId" element={<OrderDetailsPage />} />
-    </Route>
-  </Route>
-    
+            {/*  Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route
+                path="/order-confirmation"
+                element={<OrderConfirmationPage />}
+              />
+              <Route
+                path="/order-details/:orderId"
+                element={<OrderDetailsPage />}
+              />
+            </Route>
+          </Route>
 
           {/* Admin Routes with Layout */}
-          <Route element={<AdminProtectedRoutes/>}>
-          <Route path="/admin" element={<AdminLayout />} >
-            <Route index element={<AdminHomePage />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="products" element={<ProductManagement />} />
-            <Route path="/admin/products/add" element={<AddProduct/>}/>
-            <Route path="products/edit/:id" element={<ProductEditPage />} />
-            <Route path="orders" element={<OrderManagement />} />
-          </Route>
+          <Route element={<AdminProtectedRoutes />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminHomePage />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="products" element={<ProductManagement />} />
+              <Route path="/admin/products/add" element={<AddProduct />} />
+              <Route path="products/edit/:id" element={<ProductEditPage />} />
+              <Route path="orders" element={<OrderManagement />} />
+            </Route>
           </Route>
 
           {/* Standalone Error Page - No Layout Wrapper */}

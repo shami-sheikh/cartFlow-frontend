@@ -17,7 +17,6 @@ const useDebouncedEffect = (effect, deps, delay) => {
 };
 
 const CollectionPage = () => {
-  // Initialize filters from URL searchParams on mount
   const getFiltersFromParams = (params) => {
     const obj = Object.fromEntries([...params]);
     return {
@@ -38,13 +37,11 @@ const CollectionPage = () => {
   const [sortOption, setSortOption] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
-  const {collectionId} = useParams()
-  const dispatch = useDispatch()
-  const { products,loading, error } = useSelector((state) => state.products);
-  // State for all products (unfiltered, for color extraction)
+  const { collectionId } = useParams();
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.products);
   const [allProducts, setAllProducts] = useState([]);
 
-  // Fetch all products on mount (for sidebar color extraction)
   useEffect(() => {
     async function fetchAll() {
       try {
@@ -90,10 +87,6 @@ const CollectionPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
- 
-
-  // Sync filters & sort to URL (debounced)
-  // Only update URL if filters actually change (not on initial mount)
   const isFirstRender = useRef(true);
   useDebouncedEffect(() => {
     if (isFirstRender.current) {
@@ -101,26 +94,26 @@ const CollectionPage = () => {
       return;
     }
     const params = new URLSearchParams();
-  if (filters.category) params.set("category", filters.category);
-  if (filters.gender) params.set("gender", filters.gender);
-  filters.color.forEach((c) => params.append("color", c));
-  filters.size.forEach((s) => params.append("size", s));
-  filters.material.forEach((m) => params.append("material", m));
-  filters.brand.forEach((b) => params.append("brand", b));
-  if (filters.minPrice !== undefined) params.set("minPrice", filters.minPrice);
-  if (filters.maxPrice !== undefined) params.set("maxPrice", filters.maxPrice);
-  if (filters.search) params.set("search", filters.search);
-  if (sortOption) params.set("sort", sortOption);
-  setSearchParams(params);
+    if (filters.category) params.set("category", filters.category);
+    if (filters.gender) params.set("gender", filters.gender);
+    filters.color.forEach((c) => params.append("color", c));
+    filters.size.forEach((s) => params.append("size", s));
+    filters.material.forEach((m) => params.append("material", m));
+    filters.brand.forEach((b) => params.append("brand", b));
+    if (filters.minPrice !== undefined) params.set("minPrice", filters.minPrice);
+    if (filters.maxPrice !== undefined) params.set("maxPrice", filters.maxPrice);
+    if (filters.search) params.set("search", filters.search);
+    if (sortOption) params.set("sort", sortOption);
+    setSearchParams(params);
   }, [filters, sortOption], 300);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[#fcfaf6]">
       {/* Mobile Filter Button */}
-      <div className="lg:hidden p-4 border-b border-gray-700">
+      <div className="lg:hidden p-4 border-b border-[#ebdccb]/60">
         <button
           onClick={toggleSidebar}
-          className="flex items-center justify-center w-full py-2 px-4 bg-yellow-500 text-black font-medium rounded-md hover:bg-yellow-600 transition-colors"
+          className="flex items-center justify-center w-full py-2.5 px-4 bg-[#0f0d0b] text-white font-medium rounded-md hover:bg-[#c9973f] transition-colors"
         >
           <IoFilter className="mr-2" />
           Filter Products
@@ -130,7 +123,7 @@ const CollectionPage = () => {
       {/* Sidebar Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-30 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
@@ -140,14 +133,14 @@ const CollectionPage = () => {
         ref={sidebarRef}
         className={`${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed lg:translate-x-0 lg:static top-0 left-0 w-80 lg:w-1/4 h-full lg:h-auto 
-          bg-[#1a1714] border-r border-[#eacd89] shadow-2xl transition-transform duration-300 ease-in-out z-50
+        } fixed lg:translate-x-0 lg:static top-0 left-0 w-80 lg:w-1/4 h-full lg:h-auto
+          bg-[#fcfaf6] border-r border-[#ebdccb] shadow-2xl lg:shadow-none transition-transform duration-300 ease-in-out z-50
           overflow-y-auto`}
       >
         <div className="p-4 lg:p-6">
-          <FilterSidebar 
-            onFilterChange={handleFilterChange} 
-            filters={filters} 
+          <FilterSidebar
+            onFilterChange={handleFilterChange}
+            filters={filters}
             products={allProducts}
           />
         </div>
@@ -155,21 +148,27 @@ const CollectionPage = () => {
 
       {/* Main Content */}
       <div className="flex-grow p-4 lg:p-6">
-        <div className="">
-          <h2 className="text-2xl lg:text-3xl font-bold text-yellow-400 uppercase ">All Collection</h2>
-         
-          <p className="font-Lora">Discover our premium collection of timeless fashion pieces, crafted for elegance and comfort. Unveil the essence of style with our premium collection, curated for modern trendsetters</p>
+        <div>
+          <h2
+            className="text-3xl lg:text-4xl font-light text-[#0f0d0b] tracking-tight"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+          >
+            All Collection
+          </h2>
+          <p className="font-Lora text-[#5c5548] mt-2 max-w-2xl">
+            Discover our premium collection of timeless fashion pieces, crafted for elegance and comfort. Unveil the essence of style with our premium collection, curated for modern trendsetters.
+          </p>
         </div>
 
         {/* Sort Options */}
-        <div className="mb-6">
+        <div className="mb-6 mt-6">
           <SortOptionFilter value={sortOption} onChange={handleSortChange} />
         </div>
 
         {/* Product Grid */}
-        <ProductGrid 
-          products={products?.products} 
-          loading={loading} 
+        <ProductGrid
+          products={products?.products}
+          loading={loading}
           error={error}
           searchTerm={queryParams.search || ""}
           selectedColors={filters.color || []}

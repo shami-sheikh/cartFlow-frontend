@@ -38,31 +38,38 @@ const Home = () => {
     };
     fetchBestSeller();
   }, [dispatch]);
+
   return (
-    <div>
+    <div className="bg-[#fcfaf6]">
       <Hero />
       <GenderCollection />
       <NewArrivals />
 
       {/* Best Sellers */}
-      <h2 className="text-yellow-500 font-bold md:text-3xl text-2xl mt-8 text-center">
+      <h2
+        className="text-[#0f0d0b] font-light md:text-3xl text-2xl mt-8 text-center"
+        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+      >
         Best in CartFlow
       </h2>
-      <div className="h-[3px] w-28 mt-1 mx-auto mb-5 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+      <div className="h-[3px] w-28 mt-3 mx-auto mb-5 rounded-full bg-gradient-to-r from-[#c9973f] to-[#a87b32]"></div>
 
       {bestSellerProduct ? (
         <ProductDetails productId={bestSellerProduct._id} />
       ) : (
-        <p className="text-center text-gray-400">Loading best seller...</p>
+        <p className="text-center text-[#aba293]">Loading best seller...</p>
       )}
 
       {/* Women Collection */}
       <div className="p-10">
-        <h2 className="capitalize text-yellow-500 font-bold md:text-3xl text-2xl mt-8  text-center ">
-          Top wears for women
+        <h2
+          className="text-[#0f0d0b] font-light md:text-3xl text-2xl mt-8 text-center"
+          style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+        >
+          Top Wears for Women
         </h2>
-        <div className="h-[3px] w-44 mt-2 mb-4 mx-auto rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
-      <ProductGrid products={products?.products} loading={loading} error={error} />
+        <div className="h-[3px] w-44 mt-3 mb-4 mx-auto rounded-full bg-gradient-to-r from-[#c9973f] to-[#a87b32]"></div>
+        <ProductGrid products={products?.products} loading={loading} error={error} />
       </div>
 
       <Featured />
