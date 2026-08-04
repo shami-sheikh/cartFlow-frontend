@@ -3,6 +3,7 @@ import useScrollToTop from "../../hooks/useScrollToTop";
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
+import noproduct from "../../assets/productnotfound.mp4"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -30,7 +31,19 @@ const ProductGrid = ({ products = [], loading, error, selectedColors = [] }) => 
   }
   if (!products || products.length === 0) {
     return (
-      <p className="text-center py-20 text-[#aba293]">No products found</p>
+
+   <div className='flex flex-col items-center justify-center py-10'>
+  <p className='py-3 text-xl text-gray-600 font-medium'>No products found</p>
+  <video
+    className='w-64 md:w-80 mx-auto opacity-90'
+    src={noproduct}
+    autoPlay
+    muted
+    loop
+    playsInline
+  />
+</div>
+
     );
   }
 

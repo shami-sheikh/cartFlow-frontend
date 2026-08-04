@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { FiEdit2, FiTrash2, FiPlus, FiPackage } from "react-icons/fi";
+import noproduct from "../../assets/productnotfound.mp4";
 import {
   fetchAdminProducts,
   deleteAdminProduct,
@@ -10,7 +11,9 @@ import {
 
 const ProductManagement = () => {
   const dispatch = useDispatch();
-  const { products, loading, error } = useSelector((state) => state.adminProducts);
+  const { products, loading, error } = useSelector(
+    (state) => state.adminProducts,
+  );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
 
@@ -26,7 +29,7 @@ const ProductManagement = () => {
   const handleDeleteConfirm = () => {
     if (productToDelete) {
       const promise = dispatch(
-        deleteAdminProduct(productToDelete._id)
+        deleteAdminProduct(productToDelete._id),
       ).unwrap();
 
       toast.promise(promise, {
@@ -49,8 +52,7 @@ const ProductManagement = () => {
   };
 
   const getStockColor = (countInStock) => {
-    if (countInStock === 0)
-      return "text-red-600 bg-red-50 border-red-200";
+    if (countInStock === 0) return "text-red-600 bg-red-50 border-red-200";
     if (countInStock < 10)
       return "text-[#a87b32] bg-[#fcfaf6] border-[#ebdccb]";
     return "text-emerald-600 bg-emerald-50 border-emerald-200";
@@ -59,7 +61,9 @@ const ProductManagement = () => {
   if (loading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center bg-[#fcfaf6]">
-        <div className="text-[#8e8577] font-medium text-lg">Loading products...</div>
+        <div className="text-[#8e8577] font-medium text-lg">
+          Loading products...
+        </div>
       </div>
     );
   }
@@ -101,7 +105,8 @@ const ProductManagement = () => {
               Product Catalog
             </h3>
             <div className="text-sm font-medium text-[#8e8577] bg-[#fcfaf6] px-3 py-1 rounded-full border border-[#ebdccb]/60">
-              {products?.length || 0} product{products?.length !== 1 ? "s" : ""} total
+              {products?.length || 0} product{products?.length !== 1 ? "s" : ""}{" "}
+              total
             </div>
           </div>
 
@@ -109,18 +114,33 @@ const ProductManagement = () => {
             <table className="w-full">
               <thead className="bg-[#fcfaf6] border-b border-[#ebdccb]/60">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Image</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Stock</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-[#8e8577] uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">
+                    Image
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">
+                    Stock
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-[#8e8577] uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-[#8e8577] uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#ebdccb]/40 bg-white">
                 {products && products.length > 0 ? (
                   products.map((product) => (
-                    <tr key={product._id} className="hover:bg-[#fcfaf6] transition-colors">
+                    <tr
+                      key={product._id}
+                      className="hover:bg-[#fcfaf6] transition-colors"
+                    >
                       <td className="px-6 py-4">
                         <div className="w-16 h-16 bg-[#f0ece2] border border-[#ebdccb]/60 rounded-xl flex items-center justify-center overflow-hidden">
                           {product.images && product.images.length > 0 ? (
@@ -155,7 +175,7 @@ const ProductManagement = () => {
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 flex w-fit text-nowrap rounded-full text-xs font-semibold border ${getStockColor(
-                            product.countInStock
+                            product.countInStock,
                           )}`}
                         >
                           {product.countInStock} in stock
@@ -190,9 +210,17 @@ const ProductManagement = () => {
                   <tr>
                     <td colSpan="6" className="px-6 py-16 text-center">
                       <div className="text-[#aba293] text-5xl mb-4">📦</div>
-                      <h4 className="text-xl font-semibold text-[#0f0d0b] mb-2">
-                        No products found
-                      </h4>
+
+                      {/* Added autoPlay, playsInline, and some sizing classes so it doesn't break your table layout */}
+                      <video
+                        src={noproduct}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="max-w-xs mx-auto mb-4"
+                      />
+
                       <p className="text-[#8e8577] mb-6">
                         Get started by adding your first product to the catalog.
                       </p>
@@ -217,25 +245,45 @@ const ProductManagement = () => {
             <div className="text-3xl font-bold text-[#0f0d0b] mb-1">
               {products?.length || 0}
             </div>
-            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">Total Products</div>
+            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">
+              Total Products
+            </div>
           </div>
           <div className="bg-white border border-[#ebdccb]/60 p-6 rounded-2xl shadow-sm">
             <div className="text-3xl font-bold text-emerald-600 mb-1">
-              {products?.reduce((total, product) => total + (product.countInStock || 0), 0) || 0}
+              {products?.reduce(
+                (total, product) => total + (product.countInStock || 0),
+                0,
+              ) || 0}
             </div>
-            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">Total Stock Units</div>
+            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">
+              Total Stock Units
+            </div>
           </div>
           <div className="bg-white border border-[#ebdccb]/60 p-6 rounded-2xl shadow-sm">
             <div className="text-3xl font-bold text-[#0f0d0b] mb-1">
               {new Set(products?.map((p) => p.category)).size || 0}
             </div>
-            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">Categories</div>
+            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">
+              Categories
+            </div>
           </div>
           <div className="bg-white border border-[#ebdccb]/60 p-6 rounded-2xl shadow-sm">
             <div className="text-3xl font-bold text-[#a87b32] mb-1 truncate">
-              ₹{(products?.reduce((total, product) => total + (product.price || 0), 0) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ₹
+              {(
+                products?.reduce(
+                  (total, product) => total + (product.price || 0),
+                  0,
+                ) || 0
+              ).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </div>
-            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">Avg Price Potential</div>
+            <div className="text-[#8e8577] font-medium uppercase tracking-wider text-sm">
+              Avg Price Potential
+            </div>
           </div>
         </div>
       </div>
@@ -251,10 +299,15 @@ const ProductManagement = () => {
               Confirm Deletion
             </h3>
             <p className="text-[#5c5548] mb-4">
-              Are you sure you want to delete <span className="font-semibold text-[#0f0d0b]">"{productToDelete?.name}"</span>?
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-[#0f0d0b]">
+                "{productToDelete?.name}"
+              </span>
+              ?
             </p>
             <p className="text-red-500 bg-red-50 px-4 py-3 rounded-xl text-sm font-medium mb-8">
-              ⚠️ This action cannot be undone and will permanently remove the product from your catalog.
+              ⚠️ This action cannot be undone and will permanently remove the
+              product from your catalog.
             </p>
             <div className="flex justify-end gap-4">
               <button
